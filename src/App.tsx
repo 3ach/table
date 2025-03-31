@@ -28,7 +28,7 @@ function App() {
           <SVGDownloadButton className="real-size-layout" />
         </div>
       <hr className="p-3 w-screen"/>
-      <div className='grow' id='real-size-layout w-content'>
+      <div className='grow' id='real-size-layout'>
         <TableLayout table={table} strokeWidth={strokeWidth} />
       </div>
       </div>
