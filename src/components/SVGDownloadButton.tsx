@@ -42,7 +42,7 @@ export default function SVGDownloadButton(props: {className: string}) {
     </button>
     <a 
       className="block font-medium text-blue-600 dark:text-blue-500 hover:underline" 
-      href="https://github.com/3ach/stash/issues"
+      href="https://github.com/3ach/table/issues"
     >
       Report a bug or request a feature
     </a>
