@@ -16,6 +16,7 @@ function propertyNameToLabel(name: keyof Table): string {
         case "material": return "Material thickness";
         case "overhang": return "Tabletop overhang";
         case "units": return "Units";
+        case "trackWidth": return "Track Width";
     }
 }
 
@@ -33,6 +34,7 @@ function updateUnits(table: Table, target: Units): Table {
             'thickness': Math.ceil(table.thickness * 25.4),
             'material': Math.ceil(table.material * 25.4),
             'overhang': Math.ceil(table.overhang * 25.4),
+            'trackWidth': 100,
             'units': 'mm'
         }
     }
@@ -45,6 +47,7 @@ function updateUnits(table: Table, target: Units): Table {
         'thickness': Math.floor((table.thickness * 16) / 25.4) / 16,
         'material': Math.floor((table.material * 16) / 25.4) / 16,
         'overhang': Math.floor((table.material * 16) / 25.4) / 16,
+        trackWidth: 4,
         'units': 'in'
     }
 }

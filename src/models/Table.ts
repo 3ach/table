@@ -8,6 +8,7 @@ export type Table = {
     thickness: number,
     overhang: number,
     material: number,
+    trackWidth: number, 
     units: Units,
 }
 
@@ -33,8 +34,16 @@ export function xSparGap(table: Table): number {
 
 export function xBuffer(table: Table): number {
     if (table.units == 'in') {
-        return 11.5 / 2
+        return 11.5;
     }
 
-    return 292 / 2;
+    return 292;
+}
+
+export function yBuffer(table: Table): number {
+    if (table.units == 'in') {
+        return 12.375;
+    }
+
+    return 313;
 }

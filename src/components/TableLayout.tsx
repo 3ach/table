@@ -1,6 +1,8 @@
-import { Table, ySparCount, xSparCount } from '../models/Table'
+import { Table, ySparCount, xSparCount, yBuffer } from '../models/Table'
 import YSpar from './YSpar';
 import XSpar from './XSpar';
+import TopRail from './TopRail';
+import SideRail from './SideRail';
 
 type TableLayoutProps = {
     table: Table,
@@ -14,6 +16,7 @@ export default function TableLayout(props: TableLayoutProps) {
     const materialThickness = props.table.material
     const kerfWidth = materialThickness / 2;
     const yCut = props.table.yCut;
+    const trackWidth = props.table.trackWidth;
     
     const numYSpars = ySparCount(props.table);
     let ySpars = [];
@@ -35,8 +38,9 @@ export default function TableLayout(props: TableLayoutProps) {
         );
     }
 
-    const width = yCut + strokeWidth;
-    const height =  (tableThickness + strokeWidth) * (numYSpars + numXSpars);
+    const firstRail = ((kerfWidth + tableThickness) * (numXSpars + numYSpars)) + (strokeWidth / 2);
+    const width = yCut + strokeWidth + yBuffer(props.table);
+    const height =  (tableThickness + strokeWidth) * (numYSpars + numXSpars) + (4 * kerfWidth) + (2 * (trackWidth + tableThickness));
     const viewBox = `0 0 ${width} ${height}`
 
     return (
@@ -44,6 +48,10 @@ export default function TableLayout(props: TableLayoutProps) {
             <svg xmlns="http://www.w3.org/2000/svg" className="max-h-screen max-w-screen w-screen" viewBox={viewBox} preserveAspectRatio="xMinYMin" version="1.1">
                 {ySpars}
                 {xSpars}
+                <TopRail table={props.table} x={strokeWidth / 2} y={firstRail} rotation={0} strokeWidth={strokeWidth} />
+                <TopRail table={props.table} x={strokeWidth / 2} y={firstRail + trackWidth + kerfWidth} rotation={0} strokeWidth={strokeWidth} />
+                <SideRail table={props.table} x={strokeWidth / 2} y={firstRail + (2 * (trackWidth + kerfWidth))} rotation={0} strokeWidth={strokeWidth} />
+                <SideRail table={props.table} x={strokeWidth / 2} y={firstRail + (2 * (trackWidth + kerfWidth)) + tableThickness + kerfWidth} rotation={0} strokeWidth={strokeWidth} />
             </svg>
         </>
     )

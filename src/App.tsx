@@ -15,6 +15,7 @@ function App() {
     thickness: 3,
     material: 0.75,
     overhang: 1,  
+    trackWidth: 4,
     units: "in",
   });
 
