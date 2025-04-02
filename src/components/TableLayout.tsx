@@ -3,6 +3,7 @@ import YSpar from './YSpar';
 import XSpar from './XSpar';
 import TopRail from './TopRail';
 import SideRail from './SideRail';
+import TestParts from './TestParts';
 
 type TableLayoutProps = {
     table: Table,
@@ -17,6 +18,7 @@ export default function TableLayout(props: TableLayoutProps) {
     const kerfWidth = materialThickness / 2;
     const yCut = props.table.yCut;
     const trackWidth = props.table.trackWidth;
+    const configuration = props.table.configuration;
     
     const numYSpars = ySparCount(props.table);
     let ySpars = [];
@@ -43,15 +45,26 @@ export default function TableLayout(props: TableLayoutProps) {
     const height =  (tableThickness + strokeWidth) * (numYSpars + numXSpars) + (4 * kerfWidth) + (2 * (trackWidth + tableThickness));
     const viewBox = `0 0 ${width} ${height * 1.5}`
 
+    let rails = [];
+    if (configuration == "LR4") {
+        rails.push(<TopRail table={props.table} x={strokeWidth / 2} y={firstRail} rotation={0} strokeWidth={strokeWidth} />);
+        rails.push(<TopRail table={props.table} x={strokeWidth / 2} y={firstRail + trackWidth + kerfWidth} rotation={0} strokeWidth={strokeWidth} />);
+        rails.push(<SideRail table={props.table} x={strokeWidth / 2} y={firstRail + (2 * (trackWidth + kerfWidth))} rotation={0} strokeWidth={strokeWidth} />);
+        rails.push(<SideRail table={props.table} x={strokeWidth / 2} y={firstRail + (2 * (trackWidth + kerfWidth)) + tableThickness + kerfWidth} rotation={0} strokeWidth={strokeWidth} />);
+    }
+
+    let testPartY = firstRail;
+    if (configuration == "LR4") {
+        testPartY = firstRail + (2 * (trackWidth + kerfWidth)) + (2 * (tableThickness + kerfWidth));
+    }
+
     return (
         <>
             <svg xmlns="http://www.w3.org/2000/svg" className="max-h-screen max-w-screen w-screen" viewBox={viewBox} preserveAspectRatio="xMinYMin" version="1.1">
                 {ySpars}
                 {xSpars}
-                <TopRail table={props.table} x={strokeWidth / 2} y={firstRail} rotation={0} strokeWidth={strokeWidth} />
-                <TopRail table={props.table} x={strokeWidth / 2} y={firstRail + trackWidth + kerfWidth} rotation={0} strokeWidth={strokeWidth} />
-                <SideRail table={props.table} x={strokeWidth / 2} y={firstRail + (2 * (trackWidth + kerfWidth))} rotation={0} strokeWidth={strokeWidth} />
-                <SideRail table={props.table} x={strokeWidth / 2} y={firstRail + (2 * (trackWidth + kerfWidth)) + tableThickness + kerfWidth} rotation={0} strokeWidth={strokeWidth} />
+                {rails}
+                <TestParts table={props.table} x={strokeWidth / 2} y={testPartY} rotation={0} strokeWidth={strokeWidth} />
             </svg>
         </>
     )

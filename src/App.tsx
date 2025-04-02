@@ -17,6 +17,7 @@ function App() {
     overhang: 1,  
     trackWidth: 4,
     units: "in",
+    configuration: "LR4",
   });
 
   const strokeWidth = 1;

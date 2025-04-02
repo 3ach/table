@@ -1,4 +1,4 @@
-import { Table, Units } from "../models/Table"
+import { Configuration, Table, Units } from "../models/Table"
 import TablePropEditor from "./TablePropEditor"
 
 type TableEditorProps = {
@@ -17,6 +17,7 @@ function propertyNameToLabel(name: keyof Table): string {
         case "overhang": return "Tabletop overhang";
         case "units": return "Units";
         case "trackWidth": return "Track Width";
+        case "configuration": return "Configuration";
     }
 }
 
@@ -24,15 +25,16 @@ function updateUnits(table: Table, target: Units): Table {
     if (table.units == 'in') {
         if (target == 'cm') {
             return {
-                'xCut': Math.ceil(table.xCut * 2.54),
-                'yCut': Math.ceil(table.yCut * 2.54),
-                'xSparGap': Math.ceil(table.xSparGap * 2.54),
-                'ySparGap': Math.ceil(table.ySparGap * 2.54),
-                'thickness': Math.ceil(table.thickness * 2.54),
-                'material': Math.ceil(table.material * 2.54),
-                'overhang': Math.ceil(table.overhang * 2.54),
+                'xCut': Math.ceil(table.xCut * 25.4) / 10,
+                'yCut': Math.ceil(table.yCut * 25.4) / 10,
+                'xSparGap': Math.ceil(table.xSparGap * 25.4) / 10,
+                'ySparGap': Math.ceil(table.ySparGap * 25.4) / 10,
+                'thickness': Math.ceil(table.thickness * 25.4) / 10,
+                'material': Math.ceil(table.material * 25.4) / 10,
+                'overhang': Math.ceil(table.overhang * 25.4) / 10,
                 'trackWidth': 10,
-                'units': 'cm'
+                'units': 'cm',
+                'configuration': table.configuration,
             }
         } else if (target == 'mm') {
             return {
@@ -44,7 +46,8 @@ function updateUnits(table: Table, target: Units): Table {
                 'material': Math.ceil(table.material * 25.4),
                 'overhang': Math.ceil(table.overhang * 25.4),
                 'trackWidth': 100,
-                'units': 'mm'
+                'units': 'mm',
+                'configuration': table.configuration,
             }
         }
     }
@@ -60,7 +63,8 @@ function updateUnits(table: Table, target: Units): Table {
                 'material': table.material / 10,
                 'overhang': table.material / 10,
                 'trackWidth': table.trackWidth / 10,
-                'units': 'cm'
+                'units': 'cm',
+                'configuration': table.configuration,
             }
         } else if (target == 'in') {
             return {
@@ -72,7 +76,8 @@ function updateUnits(table: Table, target: Units): Table {
                 'material': Math.floor((table.material * 16) / 25.4) / 16,
                 'overhang': Math.floor((table.material * 16) / 25.4) / 16,
                 'trackWidth': 4,
-                'units': 'in'
+                'units': 'in',
+                'configuration': table.configuration,
             }
         }
     }
@@ -88,7 +93,8 @@ function updateUnits(table: Table, target: Units): Table {
                 'material': table.material * 10,
                 'overhang': table.material * 10,
                 'trackWidth': table.trackWidth * 10,
-                'units': 'mm'
+                'units': 'mm',
+                'configuration': table.configuration,
             }
         } else if (target = 'in') {
             return {
@@ -100,23 +106,29 @@ function updateUnits(table: Table, target: Units): Table {
                 'material': Math.floor((table.material * 16) / 2.54) / 16,
                 'overhang': Math.floor((table.material * 16) / 2.54) / 16,
                 'trackWidth': 4,
-                'units': 'in'
+                'units': 'in',
+                'configuration': table.configuration,
             }
         }
     }
 
-    console.log(`fallthrough ${table.units} -> ${target}`);
     return table;
 }
 
 export default function TableEditor(props: TableEditorProps) {
-    let convertTable = (table: Table, target: Units) => {
-        console.log(target);
-        console.log(`Old table ${JSON.stringify(table)}`);
-        table = updateUnits(table, target);
-        console.log(`New table ${JSON.stringify(table)}`);
-        props.updateTable(table)
-    }
+    let updateConfiguration = (configuration: Configuration) => {
+        let overhang = 0;
+        if (configuration == 'LR4') {
+            overhang = {
+                'mm':  25,
+                'cm': 2.5,
+                'in': 1,
+            }[props.table.units];
+        }
+
+        props.updateTable({...props.table, 'overhang': overhang, 'configuration': configuration})
+    };
+
 
     return (
         <>
@@ -163,24 +175,37 @@ export default function TableEditor(props: TableEditorProps) {
             />
         </div>
         <div className="inline-block p-1.5">
-            <label className="block mb-2 text-sm font-medium text-gray-900">
-                Units: {'  '}
-                <select
-                    className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none  focus:outline-none focus:ring-0 focus:border-gray-200 peer"
-                    defaultValue={props.table.units} 
-                    onChange={(e) => convertTable(props.table, e.target.value as Units)}
-                >
-                    <option value='in'>in</option>
-                    <option value='mm'>mm</option>
-                    <option value='cm'>cm</option>
-                </select>
-            </label>
             <TablePropEditor
                 itemName={propertyNameToLabel("overhang")}
                 propName="overhang"
                 table={props.table}
                 updateTable={props.updateTable}
             />
+        </div>
+        <div className="inline-block p-1.5">
+            <label className="block mb-2 text-sm font-medium text-gray-900">
+                Units: {'  '}
+                <select
+                    className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none  focus:outline-none focus:ring-0 focus:border-gray-200 peer"
+                    defaultValue={props.table.units} 
+                    onChange={(e) => props.updateTable(updateUnits(props.table, e.target.value as Units))}
+                >
+                    <option value='in'>in</option>
+                    <option value='mm'>mm</option>
+                    <option value='cm'>cm</option>
+                </select>
+            </label>
+            <label className="block mb-2 text-sm font-medium text-gray-900">
+                Configuration {'  '}
+                <select
+                    className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none  focus:outline-none focus:ring-0 focus:border-gray-200 peer"
+                    defaultValue={props.table.units} 
+                    onChange={(e) => updateConfiguration(e.target.value as Configuration)}
+                >
+                    <option value='LR4'>Lowrider 4</option>
+                    <option value='none'>No machine (plain table)</option>
+                </select>
+            </label>
         </div>
         </>
     )

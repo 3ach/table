@@ -15,16 +15,31 @@ export default class XSpar extends SVGComponent<XSparProps> {
         const overhang = this.props.table.overhang;
         const yGap = ySparGap(this.props.table);
 
-        let pathstr = `M 0 0`
+        let pathstr = '';
         const start = (xBuffer(this.props.table) / 2) + overhang;
+        if (start == 0) {
+            pathstr += `M 0 ${thickness / 2}`;
+        } else {
+            pathstr += `M 0 0`;
+        }
+
         for (let mortise = 0; mortise < yMortises; mortise++) {
             let x = (mortise * yGap) + start;
-            pathstr += `L ${x} 0`; 
+            if (x != 0) {
+                pathstr += `L ${x} 0`; 
+            }
             pathstr += `L ${x} ${thickness / 2}`; 
             pathstr += `L ${x + material} ${thickness / 2}`; 
-            pathstr += `L ${x + material} 0`; 
+
+            if (x + material != xCut) {
+                pathstr += `L ${x + material} 0`; 
+            }
         }
-        pathstr += `L ${xCut} 0`
+
+        if (start != 0)  {
+            pathstr += `L ${xCut} 0`
+        }
+
         pathstr += `L ${xCut} ${thickness}`
         pathstr += `L 0 ${thickness}`
         pathstr += 'z'
