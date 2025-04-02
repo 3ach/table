@@ -1,4 +1,4 @@
-export type Units = "mm" | "in";
+export type Units = "mm" | "in" | "cm";
 
 export type Table = {
     xCut: number,
@@ -33,17 +33,17 @@ export function xSparGap(table: Table): number {
 }
 
 export function xBuffer(table: Table): number {
-    if (table.units == 'in') {
-        return 11.5;
+    switch (table.units) {
+        case 'in': return 11.5;
+        case 'mm': return 292;
+        case 'cm': return 29.2;
     }
-
-    return 292;
 }
 
 export function yBuffer(table: Table): number {
-    if (table.units == 'in') {
-        return 12.375;
+    switch (table.units) {
+        case 'in': return 12.375;
+        case 'mm': return 313;
+        case 'cm': return 3.13;
     }
-
-    return 313;
 }

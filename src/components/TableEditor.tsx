@@ -21,38 +21,103 @@ function propertyNameToLabel(name: keyof Table): string {
 }
 
 function updateUnits(table: Table, target: Units): Table {
-    if (table.units == target) {
-        return table;
-    }
-
     if (table.units == 'in') {
-        return {
-            'xCut': Math.ceil(table.xCut * 25.4),
-            'yCut': Math.ceil(table.yCut * 25.4),
-            'xSparGap': Math.ceil(table.xSparGap * 25.4),
-            'ySparGap': Math.ceil(table.ySparGap * 25.4),
-            'thickness': Math.ceil(table.thickness * 25.4),
-            'material': Math.ceil(table.material * 25.4),
-            'overhang': Math.ceil(table.overhang * 25.4),
-            'trackWidth': 100,
-            'units': 'mm'
+        if (target == 'cm') {
+            return {
+                'xCut': Math.ceil(table.xCut * 2.54),
+                'yCut': Math.ceil(table.yCut * 2.54),
+                'xSparGap': Math.ceil(table.xSparGap * 2.54),
+                'ySparGap': Math.ceil(table.ySparGap * 2.54),
+                'thickness': Math.ceil(table.thickness * 2.54),
+                'material': Math.ceil(table.material * 2.54),
+                'overhang': Math.ceil(table.overhang * 2.54),
+                'trackWidth': 10,
+                'units': 'cm'
+            }
+        } else if (target == 'mm') {
+            return {
+                'xCut': Math.ceil(table.xCut * 25.4),
+                'yCut': Math.ceil(table.yCut * 25.4),
+                'xSparGap': Math.ceil(table.xSparGap * 25.4),
+                'ySparGap': Math.ceil(table.ySparGap * 25.4),
+                'thickness': Math.ceil(table.thickness * 25.4),
+                'material': Math.ceil(table.material * 25.4),
+                'overhang': Math.ceil(table.overhang * 25.4),
+                'trackWidth': 100,
+                'units': 'mm'
+            }
         }
     }
 
-    return {
-        'xCut': Math.floor((table.xCut * 16) / 25.4) / 16,
-        'yCut': Math.floor((table.yCut * 16) / 25.4) / 16,
-        'xSparGap': Math.floor((table.xSparGap * 16) / 25.4) / 16,
-        'ySparGap': Math.floor((table.ySparGap * 16) / 25.4) / 16,
-        'thickness': Math.floor((table.thickness * 16) / 25.4) / 16,
-        'material': Math.floor((table.material * 16) / 25.4) / 16,
-        'overhang': Math.floor((table.material * 16) / 25.4) / 16,
-        trackWidth: 4,
-        'units': 'in'
+    if (table.units == 'mm') {
+        if (target == 'cm') {
+            return {
+                'xCut': table.xCut / 10,
+                'yCut': table.yCut / 10,
+                'xSparGap': table.xSparGap / 10,
+                'ySparGap': table.ySparGap / 10,
+                'thickness': table.thickness / 10,
+                'material': table.material / 10,
+                'overhang': table.material / 10,
+                'trackWidth': table.trackWidth / 10,
+                'units': 'cm'
+            }
+        } else if (target == 'in') {
+            return {
+                'xCut': Math.floor((table.xCut * 16) / 25.4) / 16,
+                'yCut': Math.floor((table.yCut * 16) / 25.4) / 16,
+                'xSparGap': Math.floor((table.xSparGap * 16) / 25.4) / 16,
+                'ySparGap': Math.floor((table.ySparGap * 16) / 25.4) / 16,
+                'thickness': Math.floor((table.thickness * 16) / 25.4) / 16,
+                'material': Math.floor((table.material * 16) / 25.4) / 16,
+                'overhang': Math.floor((table.material * 16) / 25.4) / 16,
+                'trackWidth': 4,
+                'units': 'in'
+            }
+        }
     }
+
+    if (table.units == 'cm') {
+        if (target == 'mm') {
+            return {
+                'xCut': table.xCut * 10,
+                'yCut': table.yCut * 10,
+                'xSparGap': table.xSparGap * 10,
+                'ySparGap': table.ySparGap * 10,
+                'thickness': table.thickness * 10,
+                'material': table.material * 10,
+                'overhang': table.material * 10,
+                'trackWidth': table.trackWidth * 10,
+                'units': 'mm'
+            }
+        } else if (target = 'in') {
+            return {
+                'xCut': Math.floor((table.xCut * 16) / 2.54) / 16,
+                'yCut': Math.floor((table.yCut * 16) / 2.54) / 16,
+                'xSparGap': Math.floor((table.xSparGap * 16) / 2.54) / 16,
+                'ySparGap': Math.floor((table.ySparGap * 16) / 2.54) / 16,
+                'thickness': Math.floor((table.thickness * 16) / 2.54) / 16,
+                'material': Math.floor((table.material * 16) / 2.54) / 16,
+                'overhang': Math.floor((table.material * 16) / 2.54) / 16,
+                'trackWidth': 4,
+                'units': 'in'
+            }
+        }
+    }
+
+    console.log(`fallthrough ${table.units} -> ${target}`);
+    return table;
 }
 
 export default function TableEditor(props: TableEditorProps) {
+    let convertTable = (table: Table, target: Units) => {
+        console.log(target);
+        console.log(`Old table ${JSON.stringify(table)}`);
+        table = updateUnits(table, target);
+        console.log(`New table ${JSON.stringify(table)}`);
+        props.updateTable(table)
+    }
+
     return (
         <>
         <div className="inline-block p-1.5">
@@ -103,10 +168,11 @@ export default function TableEditor(props: TableEditorProps) {
                 <select
                     className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none  focus:outline-none focus:ring-0 focus:border-gray-200 peer"
                     defaultValue={props.table.units} 
-                    onChange={(e) => props.updateTable(updateUnits(props.table, e.target.value as Units))}
+                    onChange={(e) => convertTable(props.table, e.target.value as Units)}
                 >
                     <option value='in'>in</option>
-                    {/* <option value='mm'>mm</option> */}
+                    <option value='mm'>mm</option>
+                    <option value='cm'>cm</option>
                 </select>
             </label>
             <TablePropEditor

@@ -41,7 +41,7 @@ export default function TableLayout(props: TableLayoutProps) {
     const firstRail = ((kerfWidth + tableThickness) * (numXSpars + numYSpars)) + (strokeWidth / 2);
     const width = yCut + strokeWidth + yBuffer(props.table);
     const height =  (tableThickness + strokeWidth) * (numYSpars + numXSpars) + (4 * kerfWidth) + (2 * (trackWidth + tableThickness));
-    const viewBox = `0 0 ${width} ${height}`
+    const viewBox = `0 0 ${width} ${height * 1.5}`
 
     return (
         <>

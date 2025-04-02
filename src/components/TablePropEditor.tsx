@@ -10,10 +10,12 @@ type TablePropEditorProps = {
 
 export default function TablePropEditor(props: TablePropEditorProps) {
     let [value, setValue] = useState(props.table[props.propName].toString());
+    let [pending, setPending] = useState(false);
     console.log(`Rerendering. ${value}`)
 
     const update = (valueStr: string) => {
         const val = parseFloat(valueStr);
+        setPending(false);
         props.updateTable({...props.table, [props.propName]: val})
     }
 
@@ -24,6 +26,7 @@ export default function TablePropEditor(props: TablePropEditorProps) {
         }
     }
 
+    let currentValue = pending ? value : props.table[props.propName];
 
     return (
         <>
@@ -32,8 +35,8 @@ export default function TablePropEditor(props: TablePropEditorProps) {
                 <input 
                     key={props.propName}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5" 
-                    onChange={(e) => setValue(e.target.value)}
-                    value={value} 
+                    onChange={(e) => {setPending(true); setValue(e.target.value)}}
+                    value={currentValue} 
                     onBlur={(e) => update(e.target.value)} 
                     onKeyDown={updateIfEnterPressed}/>
             </label>
