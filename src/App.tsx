@@ -7,18 +7,18 @@ import { Table } from './models/Table';
 import SVGDownloadButton from './components/SVGDownloadButton';
 
 function App() {
-  const [table, setTable] = useState<Table>({
-    xCut: 49,
-    yCut: 97,
-    xSparGap: 12,
-    ySparGap: 12,
-    thickness: 3,
-    material: 0.75,
-    overhang: 1,  
-    trackWidth: 4,
-    units: "in",
-    configuration: "LR4",
-  });
+  const [table, setTable] = useState<Table>(new Table(
+    49,
+    97,
+    12,
+    12,
+    3,
+    0.75,
+    1,
+    4,
+    "in",
+    "LR4",
+  ));
 
   const strokeWidth = 1;
 

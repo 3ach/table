@@ -1,6 +1,6 @@
 import { SVG } from '@svgdotjs/svg.js';
 import { SVGComponent, SVGProps } from './SVGComponent';
-import { Table, yBuffer } from '../models/Table';
+import { Table } from '../models/Table';
 
 interface SideRailProps extends SVGProps {
     table: Table,
@@ -8,8 +8,8 @@ interface SideRailProps extends SVGProps {
 
 export default class SideRail extends SVGComponent<SideRailProps> {
     svg() {
-        const length = this.props.table.yCut + yBuffer(this.props.table);
-        const sparInset = this.props.table.overhang + (yBuffer(this.props.table) / 2);
+        const length = this.props.table.yCut + this.props.table.yBuffer;
+        const sparInset = this.props.table.overhang + (this.props.table.yBuffer / 2);
         const thickness = this.props.table.thickness;
 
         let pathstr = `M 0 0`

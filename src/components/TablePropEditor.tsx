@@ -1,10 +1,10 @@
-import { Table } from "../models/Table"
+import { Table, TableEditable } from "../models/Table"
 import { useState } from "react";
 
 type TablePropEditorProps = {
     table: Table,
     itemName: string,
-    propName: keyof Table,
+    propName: keyof TableEditable,
     updateTable: (c: Table) => void,
 }
 
@@ -16,7 +16,8 @@ export default function TablePropEditor(props: TablePropEditorProps) {
     const update = (valueStr: string) => {
         const val = parseFloat(valueStr);
         setPending(false);
-        props.updateTable({...props.table, [props.propName]: val})
+        props.table[props.propName] = val;
+        props.updateTable(props.table)
     }
 
     const updateIfEnterPressed = (e: React.KeyboardEvent<HTMLInputElement>) => {

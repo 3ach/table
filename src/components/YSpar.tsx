@@ -1,6 +1,6 @@
 import { SVG } from '@svgdotjs/svg.js';
 import { SVGComponent, SVGProps } from './SVGComponent';
-import { Table, xSparCount, xSparGap } from '../models/Table';
+import { Table } from '../models/Table';
 
 interface YSparProps extends SVGProps {
     table: Table,
@@ -12,8 +12,8 @@ export default class YSpar extends SVGComponent<YSparProps> {
         const yCut = this.props.table.yCut - (2 * overhang);
         const thickness = this.props.table.thickness;
         const material = this.props.table.material;
-        const xMortises = xSparCount(this.props.table) - 1;
-        const xGap = xSparGap(this.props.table);
+        const xMortises = this.props.table.xSparCount - 1;
+        const xGap = this.props.table.xSparGap;
 
         let pathstr = `M 0 0`
         pathstr += `L 0 ${thickness / 2}`; 

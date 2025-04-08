@@ -1,6 +1,6 @@
 import { SVG } from '@svgdotjs/svg.js';
 import { SVGComponent, SVGProps } from './SVGComponent';
-import { Table, yBuffer } from '../models/Table';
+import { Table } from '../models/Table';
 
 interface TopRailProps extends SVGProps {
     table: Table,
@@ -8,8 +8,8 @@ interface TopRailProps extends SVGProps {
 
 export default class TopRail extends SVGComponent<TopRailProps> {
     svg() {
-        const length = this.props.table.yCut + yBuffer(this.props.table);
-        const sparInset = this.props.table.overhang + (yBuffer(this.props.table) / 2);
+        const length = this.props.table.yCut + this.props.table.yBuffer;
+        const sparInset = this.props.table.overhang + (this.props.table.yBuffer / 2);
         const trackWidth = this.props.table.trackWidth;
 
         let pathstr = `M 0 0`

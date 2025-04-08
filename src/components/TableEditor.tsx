@@ -1,4 +1,4 @@
-import { Configuration, Table, Units } from "../models/Table"
+import { Configuration, Table, TableEditable, Units } from "../models/Table"
 import TablePropEditor from "./TablePropEditor"
 
 type TableEditorProps = {
@@ -6,113 +6,25 @@ type TableEditorProps = {
     updateTable: (c: Table) => void,
 }
 
-function propertyNameToLabel(name: keyof Table): string {
+function propertyNameToLabel(name: keyof TableEditable): string {
     switch (name) {
         case "xCut": return "X Cut Dimension";
         case "yCut": return "Y Cut Dimension";
-        case "xSparGap": return "Minimum X Spar Gap";
-        case "ySparGap": return "Minimum Y Spar Gap";
+        case "xSparMinGap": return "Minimum X Spar Gap";
+        case "ySparMinGap": return "Minimum Y Spar Gap";
         case "thickness": return "Table thickness";
         case "material": return "Material thickness";
         case "overhang": return "Tabletop overhang";
-        case "units": return "Units";
         case "trackWidth": return "Track Width";
-        case "configuration": return "Configuration";
     }
 }
 
 function updateUnits(table: Table, target: Units): Table {
-    if (table.units == 'in') {
-        if (target == 'cm') {
-            return {
-                'xCut': Math.ceil(table.xCut * 25.4) / 10,
-                'yCut': Math.ceil(table.yCut * 25.4) / 10,
-                'xSparGap': Math.ceil(table.xSparGap * 25.4) / 10,
-                'ySparGap': Math.ceil(table.ySparGap * 25.4) / 10,
-                'thickness': Math.ceil(table.thickness * 25.4) / 10,
-                'material': Math.ceil(table.material * 25.4) / 10,
-                'overhang': Math.ceil(table.overhang * 25.4) / 10,
-                'trackWidth': 10,
-                'units': 'cm',
-                'configuration': table.configuration,
-            }
-        } else if (target == 'mm') {
-            return {
-                'xCut': Math.ceil(table.xCut * 25.4),
-                'yCut': Math.ceil(table.yCut * 25.4),
-                'xSparGap': Math.ceil(table.xSparGap * 25.4),
-                'ySparGap': Math.ceil(table.ySparGap * 25.4),
-                'thickness': Math.ceil(table.thickness * 25.4),
-                'material': Math.ceil(table.material * 25.4),
-                'overhang': Math.ceil(table.overhang * 25.4),
-                'trackWidth': 100,
-                'units': 'mm',
-                'configuration': table.configuration,
-            }
-        }
-    }
-
-    if (table.units == 'mm') {
-        if (target == 'cm') {
-            return {
-                'xCut': table.xCut / 10,
-                'yCut': table.yCut / 10,
-                'xSparGap': table.xSparGap / 10,
-                'ySparGap': table.ySparGap / 10,
-                'thickness': table.thickness / 10,
-                'material': table.material / 10,
-                'overhang': table.material / 10,
-                'trackWidth': table.trackWidth / 10,
-                'units': 'cm',
-                'configuration': table.configuration,
-            }
-        } else if (target == 'in') {
-            return {
-                'xCut': Math.floor((table.xCut * 16) / 25.4) / 16,
-                'yCut': Math.floor((table.yCut * 16) / 25.4) / 16,
-                'xSparGap': Math.floor((table.xSparGap * 16) / 25.4) / 16,
-                'ySparGap': Math.floor((table.ySparGap * 16) / 25.4) / 16,
-                'thickness': Math.floor((table.thickness * 16) / 25.4) / 16,
-                'material': Math.floor((table.material * 16) / 25.4) / 16,
-                'overhang': Math.floor((table.material * 16) / 25.4) / 16,
-                'trackWidth': 4,
-                'units': 'in',
-                'configuration': table.configuration,
-            }
-        }
-    }
-
-    if (table.units == 'cm') {
-        if (target == 'mm') {
-            return {
-                'xCut': table.xCut * 10,
-                'yCut': table.yCut * 10,
-                'xSparGap': table.xSparGap * 10,
-                'ySparGap': table.ySparGap * 10,
-                'thickness': table.thickness * 10,
-                'material': table.material * 10,
-                'overhang': table.material * 10,
-                'trackWidth': table.trackWidth * 10,
-                'units': 'mm',
-                'configuration': table.configuration,
-            }
-        } else if (target = 'in') {
-            return {
-                'xCut': Math.floor((table.xCut * 16) / 2.54) / 16,
-                'yCut': Math.floor((table.yCut * 16) / 2.54) / 16,
-                'xSparGap': Math.floor((table.xSparGap * 16) / 2.54) / 16,
-                'ySparGap': Math.floor((table.ySparGap * 16) / 2.54) / 16,
-                'thickness': Math.floor((table.thickness * 16) / 2.54) / 16,
-                'material': Math.floor((table.material * 16) / 2.54) / 16,
-                'overhang': Math.floor((table.material * 16) / 2.54) / 16,
-                'trackWidth': 4,
-                'units': 'in',
-                'configuration': table.configuration,
-            }
-        }
-    }
-
-    return table;
+    return {
+        "mm": table.inMillimeters, 
+        "cm": table.inCentimeters,
+        "in": table.inInches,
+    }[target];
 }
 
 export default function TableEditor(props: TableEditorProps) {
@@ -126,7 +38,10 @@ export default function TableEditor(props: TableEditorProps) {
             }[props.table.units];
         }
 
-        props.updateTable({...props.table, 'overhang': overhang, 'configuration': configuration})
+        props.table.overhang = overhang;
+        props.table.configuration = configuration;
+
+        props.updateTable(props.table)
     };
 
 
@@ -140,8 +55,8 @@ export default function TableEditor(props: TableEditorProps) {
                 updateTable={props.updateTable}
             />
             <TablePropEditor
-                itemName={propertyNameToLabel("xSparGap")}
-                propName="xSparGap"
+                itemName={propertyNameToLabel("xSparMinGap")}
+                propName="xSparMinGap"
                 table={props.table}
                 updateTable={props.updateTable}
             />
@@ -154,8 +69,8 @@ export default function TableEditor(props: TableEditorProps) {
                 updateTable={props.updateTable}
             />
             <TablePropEditor
-                itemName={propertyNameToLabel("ySparGap")}
-                propName="ySparGap"
+                itemName={propertyNameToLabel("ySparMinGap")}
+                propName="ySparMinGap"
                 table={props.table}
                 updateTable={props.updateTable}
             />
