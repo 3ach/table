@@ -13,6 +13,7 @@ function propertyNameToLabel(name: keyof TableEditable): string {
         case "xSparMinGap": return "Minimum X Spar Gap";
         case "ySparMinGap": return "Minimum Y Spar Gap";
         case "thickness": return "Table thickness";
+        case "railMaterialThickness": return "Rail material thickness";
         case "material": return "Material thickness";
         case "overhang": return "Tabletop overhang";
         case "trackWidth": return "Track Width";
@@ -100,6 +101,14 @@ export default function TableEditor(props: TableEditorProps) {
             <TablePropEditor
                 itemName={propertyNameToLabel("overhang")}
                 propName="overhang"
+                table={props.table}
+                updateTable={props.updateTable}
+            />
+        </div>
+        <div className="inline-block p-1.5">
+            <TablePropEditor
+                itemName={propertyNameToLabel("railMaterialThickness")}
+                propName="railMaterialThickness"
                 table={props.table}
                 updateTable={props.updateTable}
             />

@@ -8,6 +8,7 @@ export interface TableEditable {
     ySparMinGap: number;
     clipMinGap: number;
     thickness: number;
+    railMaterialThickness: number;
     overhang: number;
     material: number;
     trackWidth: number;
@@ -20,19 +21,21 @@ export class Table implements TableEditable {
     ySparMinGap: number;
     clipMinGap: number;
     thickness: number;
+    railMaterialThickness: number;
     overhang: number;
     material: number;
     trackWidth: number;
     units: Units;
     configuration: Configuration;
 
-    constructor(xCut: number, yCut: number, xSparMinGap: number, ySparMinGap: number, clipMinGap: number, thickness: number, overhang: number, material: number, trackWidth: number, units: Units, configuration: Configuration) {
+    constructor(xCut: number, yCut: number, xSparMinGap: number, ySparMinGap: number, clipMinGap: number, thickness: number, railMaterialThickness: number, material: number, overhang: number, trackWidth: number, units: Units, configuration: Configuration) {
         this.xCut = xCut;
         this.yCut = yCut,
         this.xSparMinGap = xSparMinGap;
         this.ySparMinGap = ySparMinGap;
         this.clipMinGap = clipMinGap;
         this.thickness = thickness;
+        this.railMaterialThickness = railMaterialThickness;
         this.overhang = overhang;
         this.material = material;
         this.trackWidth = trackWidth;
@@ -129,6 +132,13 @@ export class Table implements TableEditable {
         }[this.units] ;
     }
 
+    get xSparRailShrink(): number {
+        return {
+            "LR4": 2 * this.railMaterialThickness,
+            "none": 0,
+        }[this.configuration]
+    }
+
     get inMillimeters(): Table {
         const convert = {
             "mm": (x: number) => x,
@@ -143,8 +153,9 @@ export class Table implements TableEditable {
             convert(this.ySparMinGap),
             convert(this.clipMinGap),
             convert(this.thickness),
-            convert(this.overhang),
+            convert(this.railMaterialThickness),
             convert(this.material),
+            convert(this.overhang),
             convert(this.trackWidth),
             "mm",
             this.configuration,
@@ -165,8 +176,9 @@ export class Table implements TableEditable {
             convert(this.ySparMinGap),
             convert(this.clipMinGap),
             convert(this.thickness),
-            convert(this.overhang),
+            convert(this.railMaterialThickness),
             convert(this.material),
+            convert(this.overhang),
             convert(this.trackWidth),
             "cm",
             this.configuration,
@@ -187,8 +199,9 @@ export class Table implements TableEditable {
             convert(this.ySparMinGap),
             convert(this.clipMinGap),
             convert(this.thickness),
-            convert(this.overhang),
+            convert(this.railMaterialThickness),
             convert(this.material),
+            convert(this.overhang),
             convert(this.trackWidth),
             "in",
             this.configuration,
