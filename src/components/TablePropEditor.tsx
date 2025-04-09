@@ -11,13 +11,25 @@ type TablePropEditorProps = {
 export default function TablePropEditor(props: TablePropEditorProps) {
     let [value, setValue] = useState(props.table[props.propName].toString());
     let [pending, setPending] = useState(false);
-    console.log(`Rerendering. ${value}`)
 
     const update = (valueStr: string) => {
+        let newTable = new Table(
+            props.table.xCut,
+            props.table.yCut,
+            props.table.xSparMinGap,
+            props.table.ySparMinGap,
+            props.table.clipMinGap,
+            props.table.thickness,
+            props.table.overhang,
+            props.table.material,
+            props.table.trackWidth,
+            props.table.units,
+            props.table.configuration,
+        );
         const val = parseFloat(valueStr);
         setPending(false);
-        props.table[props.propName] = val;
-        props.updateTable(props.table)
+        newTable[props.propName] = val;
+        props.updateTable(newTable)
     }
 
     const updateIfEnterPressed = (e: React.KeyboardEvent<HTMLInputElement>) => {
