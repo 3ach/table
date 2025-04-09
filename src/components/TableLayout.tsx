@@ -46,12 +46,14 @@ export default function TableLayout(props: TableLayoutProps) {
     const height =  (tableThickness + strokeWidth) * (ySparCount + xSparCount) + (4 * kerfWidth) + (2 * (trackWidth + tableThickness));
     const viewBox = `0 0 ${width} ${height * 1.5}`
 
+    console.log("Rendering rails.")
+
     let rails = [];
     if (configuration == "LR4") {
-        rails.push(<TopRail table={props.table} x={strokeWidth / 2} y={firstRail} rotation={0} strokeWidth={strokeWidth} />);
-        rails.push(<TopRail table={props.table} x={strokeWidth / 2} y={firstRail + trackWidth + kerfWidth} rotation={0} strokeWidth={strokeWidth} />);
-        rails.push(<SideRail table={props.table} x={strokeWidth / 2} y={firstRail + (2 * (trackWidth + kerfWidth))} rotation={0} strokeWidth={strokeWidth} />);
-        rails.push(<SideRail table={props.table} x={strokeWidth / 2} y={firstRail + (2 * (trackWidth + kerfWidth)) + tableThickness + kerfWidth} rotation={0} strokeWidth={strokeWidth} />);
+        rails.push(<TopRail key={"rail-top"} table={props.table} x={strokeWidth / 2} y={firstRail} rotation={0} strokeWidth={strokeWidth} rail={true} />);
+        rails.push(<TopRail key={"flat-top"} table={props.table} x={strokeWidth / 2} y={firstRail + trackWidth + kerfWidth} rotation={0} strokeWidth={strokeWidth} rail={false} />);
+        rails.push(<SideRail key={"rail-side"} table={props.table} x={strokeWidth / 2} y={firstRail + (2 * (trackWidth + kerfWidth))} rotation={0} strokeWidth={strokeWidth} />);
+        rails.push(<SideRail key={"flat-side"} table={props.table} x={strokeWidth / 2} y={firstRail + (2 * (trackWidth + kerfWidth)) + tableThickness + kerfWidth} rotation={0} strokeWidth={strokeWidth} />);
     }
 
     let testPartY = firstRail;

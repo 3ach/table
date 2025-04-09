@@ -4,6 +4,7 @@ import { Table } from '../models/Table';
 
 interface TopRailProps extends SVGProps {
     table: Table,
+    rail: boolean,
 }
 
 export default class TopRail extends SVGComponent<TopRailProps> {
@@ -22,6 +23,21 @@ export default class TopRail extends SVGComponent<TopRailProps> {
         pathstr += `L ${sparInset} ${trackWidth * 0.75}`
         pathstr += `M ${length - sparInset} ${trackWidth * 0.25}`
         pathstr += `L ${length - sparInset} ${trackWidth * 0.75}`
+
+        if (this.props.rail) {
+            const offset = this.props.table.clipOffset;
+            const holeStart = this.props.table.clipsFrontSetback;
+            const clipCount = this.props.table.clipCount;
+            const holeSize = this.props.table.holeSize;
+            const clipGap = this.props.table.clipGap;
+
+            for (let clip = 0; clip < clipCount; clip++) {
+                let x = (clip * clipGap) + holeStart - (holeSize / 2);
+                pathstr += `M ${x} ${offset}`;
+                pathstr += `A ${holeSize / 2} ${holeSize / 2} 0 0 1 ${x + holeSize} ${offset}`
+                pathstr += `A ${holeSize / 2} ${holeSize / 2} 0 0 1 ${x} ${offset}`
+            }
+        }
 
         return SVG().path(pathstr).fill("none").attr('vector-effect', 'non-scaling-stroke');
     }

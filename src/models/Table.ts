@@ -6,6 +6,7 @@ export interface TableEditable {
     yCut: number;
     xSparMinGap: number;
     ySparMinGap: number;
+    clipMinGap: number;
     thickness: number;
     overhang: number;
     material: number;
@@ -17,6 +18,7 @@ export class Table implements TableEditable {
     yCut: number;
     xSparMinGap: number;
     ySparMinGap: number;
+    clipMinGap: number;
     thickness: number;
     overhang: number;
     material: number;
@@ -24,11 +26,12 @@ export class Table implements TableEditable {
     units: Units;
     configuration: Configuration;
 
-    constructor(xCut: number, yCut: number, xSparMinGap: number, ySparMinGap: number, thickness: number, overhang: number, material: number, trackWidth: number, units: Units, configuration: Configuration) {
+    constructor(xCut: number, yCut: number, xSparMinGap: number, ySparMinGap: number, clipMinGap: number, thickness: number, overhang: number, material: number, trackWidth: number, units: Units, configuration: Configuration) {
         this.xCut = xCut;
         this.yCut = yCut,
-            this.xSparMinGap = xSparMinGap;
+        this.xSparMinGap = xSparMinGap;
         this.ySparMinGap = ySparMinGap;
+        this.clipMinGap = clipMinGap;
         this.thickness = thickness;
         this.overhang = overhang;
         this.material = material;
@@ -81,6 +84,51 @@ export class Table implements TableEditable {
         return 0;
     }
 
+    get holeSize(): number {
+        return {
+            "mm": 4,
+            "cm": 0.4,
+            "in": 4 / 25.4,
+        }[this.units];
+    }
+
+    get clipsFrontSetback(): number {
+        return {
+            "mm": 89,
+            "cm": 8.9,
+            "in": 3.50, 
+        }[this.units];
+    }
+
+    get clipsBackSetback(): number {
+        return {
+            "mm": 50,
+            "cm": 5,
+            "in": 1.9685, 
+        }[this.units] ;
+    }
+
+    get totalClipLength(): number {
+        const yLength = this.yCut + this.yBuffer;
+        return yLength - this.clipsFrontSetback - this.clipsBackSetback;
+    }
+
+    get clipCount(): number {
+        return Math.ceil(this.totalClipLength / this.clipMinGap) + 1;
+    }
+
+    get clipGap(): number {
+        return this.totalClipLength / (this.clipCount - 1);
+    }
+
+    get clipOffset(): number {
+        return {
+            "mm": 88,
+            "cm": 8.8,
+            "in": 88 / 25.4, 
+        }[this.units] ;
+    }
+
     get inMillimeters(): Table {
         const convert = {
             "mm": (x: number) => x,
@@ -93,6 +141,7 @@ export class Table implements TableEditable {
             convert(this.yCut),
             convert(this.xSparMinGap),
             convert(this.ySparMinGap),
+            convert(this.clipMinGap),
             convert(this.thickness),
             convert(this.overhang),
             convert(this.material),
@@ -114,6 +163,7 @@ export class Table implements TableEditable {
             convert(this.yCut),
             convert(this.xSparMinGap),
             convert(this.ySparMinGap),
+            convert(this.clipMinGap),
             convert(this.thickness),
             convert(this.overhang),
             convert(this.material),
@@ -135,6 +185,7 @@ export class Table implements TableEditable {
             convert(this.yCut),
             convert(this.xSparMinGap),
             convert(this.ySparMinGap),
+            convert(this.clipMinGap),
             convert(this.thickness),
             convert(this.overhang),
             convert(this.material),
