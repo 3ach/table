@@ -17,6 +17,7 @@ function propertyNameToLabel(name: keyof TableEditable): string {
         case "material": return "Material thickness";
         case "overhang": return "Tabletop overhang";
         case "clipMinGap": return "Minimum Rail Clip Gap";
+        case "trackCutPoint": return "Rail Max Length per Piece"
     }
 }
 
@@ -108,6 +109,12 @@ export default function TableEditor(props: TableEditorProps) {
             <TablePropEditor
                 itemName={propertyNameToLabel("railMaterialThickness")}
                 propName="railMaterialThickness"
+                table={props.table}
+                updateTable={props.updateTable}
+            />
+            <TablePropEditor
+                itemName={propertyNameToLabel("trackCutPoint")}
+                propName="trackCutPoint"
                 table={props.table}
                 updateTable={props.updateTable}
             />

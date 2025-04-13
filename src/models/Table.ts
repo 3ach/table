@@ -11,6 +11,7 @@ export interface TableEditable {
     railMaterialThickness: number;
     overhang: number;
     material: number;
+    trackCutPoint: number;
 }
 
 export class Table implements TableEditable {
@@ -23,10 +24,11 @@ export class Table implements TableEditable {
     railMaterialThickness: number;
     overhang: number;
     material: number;
+    trackCutPoint: number;
     units: Units;
     configuration: Configuration;
 
-    constructor(xCut: number, yCut: number, xSparMinGap: number, ySparMinGap: number, clipMinGap: number, thickness: number, railMaterialThickness: number, material: number, overhang: number, units: Units, configuration: Configuration) {
+    constructor(xCut: number, yCut: number, xSparMinGap: number, ySparMinGap: number, clipMinGap: number, thickness: number, railMaterialThickness: number, material: number, overhang: number, trackCutPoint: number, units: Units, configuration: Configuration) {
         this.xCut = xCut;
         this.yCut = yCut,
         this.xSparMinGap = xSparMinGap;
@@ -36,6 +38,7 @@ export class Table implements TableEditable {
         this.railMaterialThickness = railMaterialThickness;
         this.overhang = overhang;
         this.material = material;
+        this.trackCutPoint = trackCutPoint;
         this.units = units;
         this.configuration = configuration;
     }
@@ -177,6 +180,7 @@ export class Table implements TableEditable {
             convert(this.railMaterialThickness),
             convert(this.material),
             convert(this.overhang),
+            convert(this.trackCutPoint),
             "mm",
             this.configuration,
         )
@@ -199,6 +203,7 @@ export class Table implements TableEditable {
             convert(this.railMaterialThickness),
             convert(this.material),
             convert(this.overhang),
+            convert(this.trackCutPoint),
             "cm",
             this.configuration,
         )
@@ -221,6 +226,7 @@ export class Table implements TableEditable {
             convert(this.railMaterialThickness),
             convert(this.material),
             convert(this.overhang),
+            convert(this.trackCutPoint),
             "in",
             this.configuration,
         )
