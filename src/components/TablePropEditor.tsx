@@ -23,7 +23,6 @@ export default function TablePropEditor(props: TablePropEditorProps) {
             props.table.railMaterialThickness,
             props.table.material,
             props.table.overhang,
-            props.table.trackWidth,
             props.table.units,
             props.table.configuration,
         );

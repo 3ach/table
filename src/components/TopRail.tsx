@@ -12,6 +12,9 @@ export default class TopRail extends SVGComponent<TopRailProps> {
         const length = this.props.table.yCut + this.props.table.yBuffer;
         const sparInset = this.props.table.overhang + (this.props.table.yBuffer / 2);
         const trackWidth = this.props.table.trackWidth;
+        const holeSize = this.props.table.holeSize;
+        let [yFrontSetback, yFrontFirstX, yFrontSecondX] = this.props.table.frontHoleCoordinates;
+        let [yBackFirstSetback, yBackSecondSetback, yBackFirstX, yBackSecondX] = this.props.table.backHoleCoordinates;
 
         let pathstr = `M 0 0`
         pathstr += `L ${length} 0`
@@ -28,7 +31,6 @@ export default class TopRail extends SVGComponent<TopRailProps> {
             const offset = this.props.table.clipOffset;
             const holeStart = this.props.table.clipsFrontSetback;
             const clipCount = this.props.table.clipCount;
-            const holeSize = this.props.table.holeSize;
             const clipGap = this.props.table.clipGap;
 
             for (let clip = 0; clip < clipCount; clip++) {
@@ -37,7 +39,28 @@ export default class TopRail extends SVGComponent<TopRailProps> {
                 pathstr += `A ${holeSize / 2} ${holeSize / 2} 0 0 1 ${x + holeSize} ${offset}`
                 pathstr += `A ${holeSize / 2} ${holeSize / 2} 0 0 1 ${x} ${offset}`
             }
+        } else {
+            yFrontFirstX = trackWidth - yFrontFirstX;
+            yFrontSecondX = trackWidth - yFrontSecondX;
+            yBackFirstX = trackWidth - yBackFirstX;
+            yBackSecondX = trackWidth - yBackSecondX;
         }
+
+        pathstr += `M ${yFrontSetback - (holeSize / 2)} ${yFrontFirstX}`;
+        pathstr += `A ${holeSize / 2} ${holeSize / 2} 0 0 1 ${yFrontSetback + (holeSize / 2)} ${yFrontFirstX}`
+        pathstr += `A ${holeSize / 2} ${holeSize / 2} 0 0 1 ${yFrontSetback - (holeSize / 2)} ${yFrontFirstX}`
+
+        pathstr += `M ${yFrontSetback - (holeSize / 2)} ${yFrontSecondX}`;
+        pathstr += `A ${holeSize / 2} ${holeSize / 2} 0 0 1 ${yFrontSetback + (holeSize / 2)} ${yFrontSecondX}`
+        pathstr += `A ${holeSize / 2} ${holeSize / 2} 0 0 1 ${yFrontSetback - (holeSize / 2)} ${yFrontSecondX}`
+
+        pathstr += `M ${length + (holeSize / 2) - yBackFirstSetback} ${yBackFirstX}`;
+        pathstr += `A ${holeSize / 2} ${holeSize / 2} 0 0 1 ${length - (holeSize / 2) - yBackFirstSetback} ${yBackFirstX}`
+        pathstr += `A ${holeSize / 2} ${holeSize / 2} 0 0 1 ${length + (holeSize / 2) - yBackFirstSetback} ${yBackFirstX}`
+
+        pathstr += `M ${length + (holeSize / 2) - yBackSecondSetback} ${yBackSecondX}`;
+        pathstr += `A ${holeSize / 2} ${holeSize / 2} 0 0 1 ${length - (holeSize / 2) - yBackSecondSetback} ${yBackSecondX}`
+        pathstr += `A ${holeSize / 2} ${holeSize / 2} 0 0 1 ${length + (holeSize / 2) - yBackSecondSetback} ${yBackSecondX}`
 
         return SVG().path(pathstr).fill("none").attr('vector-effect', 'non-scaling-stroke');
     }

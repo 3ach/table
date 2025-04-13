@@ -11,7 +11,6 @@ export interface TableEditable {
     railMaterialThickness: number;
     overhang: number;
     material: number;
-    trackWidth: number;
 }
 
 export class Table implements TableEditable {
@@ -24,11 +23,10 @@ export class Table implements TableEditable {
     railMaterialThickness: number;
     overhang: number;
     material: number;
-    trackWidth: number;
     units: Units;
     configuration: Configuration;
 
-    constructor(xCut: number, yCut: number, xSparMinGap: number, ySparMinGap: number, clipMinGap: number, thickness: number, railMaterialThickness: number, material: number, overhang: number, trackWidth: number, units: Units, configuration: Configuration) {
+    constructor(xCut: number, yCut: number, xSparMinGap: number, ySparMinGap: number, clipMinGap: number, thickness: number, railMaterialThickness: number, material: number, overhang: number, units: Units, configuration: Configuration) {
         this.xCut = xCut;
         this.yCut = yCut,
         this.xSparMinGap = xSparMinGap;
@@ -38,7 +36,6 @@ export class Table implements TableEditable {
         this.railMaterialThickness = railMaterialThickness;
         this.overhang = overhang;
         this.material = material;
-        this.trackWidth = trackWidth;
         this.units = units;
         this.configuration = configuration;
     }
@@ -89,25 +86,41 @@ export class Table implements TableEditable {
 
     get holeSize(): number {
         return {
-            "mm": 4,
-            "cm": 0.4,
-            "in": 4 / 25.4,
+            "mm": 4.5,
+            "cm": 0.45,
+            "in": 4.5 / 25.4,
         }[this.units];
+    }
+
+    get frontHoleCoordinates(): [number, number, number] {
+        return {
+            "mm": [7.75, 8.25, 21.75],
+            "cm": [7.75 / 10, 8.25 / 10, 21.75 / 10],
+            "in": [7.75 / 25.4, 8.25 / 25.4, 21.75 / 25.4],
+        }[this.units] as [number, number, number];
+    }
+
+    get backHoleCoordinates(): [number, number, number, number] {
+        return {
+            "mm": [15, 15, 8.25, 24.25],
+            "cm": [15 / 10, 7.75 / 10, 8.25 / 10, 24.25 / 10],
+            "in": [15 / 25.4, 7.75 / 25.4, 8.25 / 25.4, 24.25 / 25.4],
+        }[this.units] as [number, number, number, number];
     }
 
     get clipsFrontSetback(): number {
         return {
-            "mm": 89,
-            "cm": 8.9,
-            "in": 3.50, 
+            "mm": (51 + 5 + 10),
+            "cm": (51 + 5 + 10) / 10,
+            "in": (51 + 5 + 10) / 25.4, 
         }[this.units];
     }
 
     get clipsBackSetback(): number {
         return {
-            "mm": 50,
-            "cm": 5,
-            "in": 1.9685, 
+            "mm": 44 + 5 + 10,
+            "cm": (44 + 5 + 10) / 10,
+            "in": (44 + 5 + 10) / 25.4, 
         }[this.units] ;
     }
 
@@ -126,9 +139,9 @@ export class Table implements TableEditable {
 
     get clipOffset(): number {
         return {
-            "mm": 88,
-            "cm": 8.8,
-            "in": 88 / 25.4, 
+            "mm": 67.8,
+            "cm": 6.78,
+            "in": 67.8 / 25.4, 
         }[this.units] ;
     }
 
@@ -137,6 +150,14 @@ export class Table implements TableEditable {
             "LR4": 2 * this.railMaterialThickness,
             "none": 0,
         }[this.configuration]
+    }
+
+    get trackWidth(): number {
+        return {
+            "mm": 80,
+            "cm": 8,
+            "in": 80 / 25.4, 
+        }[this.units] ;
     }
 
     get inMillimeters(): Table {
@@ -156,7 +177,6 @@ export class Table implements TableEditable {
             convert(this.railMaterialThickness),
             convert(this.material),
             convert(this.overhang),
-            convert(this.trackWidth),
             "mm",
             this.configuration,
         )
@@ -179,7 +199,6 @@ export class Table implements TableEditable {
             convert(this.railMaterialThickness),
             convert(this.material),
             convert(this.overhang),
-            convert(this.trackWidth),
             "cm",
             this.configuration,
         )
@@ -202,7 +221,6 @@ export class Table implements TableEditable {
             convert(this.railMaterialThickness),
             convert(this.material),
             convert(this.overhang),
-            convert(this.trackWidth),
             "in",
             this.configuration,
         )

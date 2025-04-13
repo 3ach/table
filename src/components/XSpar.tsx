@@ -20,7 +20,6 @@ export default class XSpar extends SVGComponent<XSparProps> {
 
         let pathstr = '';
         const start = (xBuffer / 2) + overhang - (xShrink / 2);
-        console.log(`${xBuffer} ${xShrink} ${xCut} ${start}`)
         if (start == 0) {
             pathstr += `M 0 ${thickness / 2}`;
         } else {

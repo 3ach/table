@@ -46,8 +46,6 @@ export default function TableLayout(props: TableLayoutProps) {
     const height =  (tableThickness + strokeWidth) * (ySparCount + xSparCount) + (4 * kerfWidth) + (2 * (trackWidth + tableThickness));
     const viewBox = `0 0 ${width} ${height * 1.5}`
 
-    console.log("Rendering rails.")
-
     let rails = [];
     if (configuration == "LR4") {
         rails.push(<TopRail key={"rail-top"} table={props.table} x={strokeWidth / 2} y={firstRail} rotation={0} strokeWidth={strokeWidth} rail={true} />);

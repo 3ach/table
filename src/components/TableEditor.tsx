@@ -16,7 +16,6 @@ function propertyNameToLabel(name: keyof TableEditable): string {
         case "railMaterialThickness": return "Rail material thickness";
         case "material": return "Material thickness";
         case "overhang": return "Tabletop overhang";
-        case "trackWidth": return "Track Width";
         case "clipMinGap": return "Minimum Rail Clip Gap";
     }
 }
