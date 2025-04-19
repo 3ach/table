@@ -15,6 +15,7 @@ export default class TopRail extends SVGComponent<TopRailProps> {
         const trackWidth = this.props.table.trackWidth;
         const holeSize = this.props.table.holeSize;
         const material = this.props.table.material;
+        const xSparGap = this.props.table.xSparGap;
         const buffer = length > maxLength ? material / 2 : 0;
         let [yFrontSetback, yFrontFirstX, yFrontSecondX] = this.props.table.frontHoleCoordinates;
         let [yBackFirstSetback, yBackSecondSetback, yBackFirstX, yBackSecondX] = this.props.table.backHoleCoordinates;
@@ -22,15 +23,20 @@ export default class TopRail extends SVGComponent<TopRailProps> {
         let pathstr = `M 0 0`
 
         if (length > maxLength) {
-            pathstr += `L ${maxLength} 0`
-            pathstr += `L ${maxLength} ${trackWidth}`
+            let firstLength = maxLength;
+            const safeCutPoint = xSparGap + (4 * material) + sparInset;
+            if (length - firstLength < safeCutPoint) {
+                firstLength = length - safeCutPoint;
+            }
+            pathstr += `L ${firstLength} 0`
+            pathstr += `L ${firstLength} ${trackWidth}`
             pathstr += `L 0 ${trackWidth}`
             pathstr += 'z'
 
-            pathstr += `M ${maxLength + buffer} 0`
+            pathstr += `M ${firstLength + buffer} 0`
             pathstr += `L ${length + buffer} 0`
             pathstr += `L ${length + buffer} ${trackWidth}`
-            pathstr += `L ${maxLength + buffer} ${trackWidth}`
+            pathstr += `L ${firstLength + buffer} ${trackWidth}`
             pathstr += 'z'
 
             pathstr += `M ${sparInset} ${trackWidth * 0.25}`;
