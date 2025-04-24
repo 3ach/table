@@ -13,6 +13,7 @@ export default class TopRail extends SVGComponent<TopRailProps> {
         const maxLength = this.props.table.trackCutPoint;
         const sparInset = this.props.table.overhang + (this.props.table.yBuffer / 2);
         const trackWidth = this.props.rail ? this.props.table.railTrackWidth : this.props.table.flatTrackWidth;
+        const outsideBuffer = this.props.rail ? this.props.table.railOutsideBuffer : this.props.table.flatOutsideBuffer;
         const holeSize = this.props.table.holeSize;
         const material = this.props.table.material;
         const xSparGap = this.props.table.xSparGap;
@@ -57,7 +58,7 @@ export default class TopRail extends SVGComponent<TopRailProps> {
         }
 
         if (this.props.rail) {
-            const offset = this.props.table.clipOffset;
+            const offset = this.props.table.clipOffset + this.props.table.railOutsideBuffer;
             const holeStart = this.props.table.clipsFrontSetback;
             const clipCount = this.props.table.clipCount;
             const clipGap = this.props.table.clipGap;
@@ -71,18 +72,23 @@ export default class TopRail extends SVGComponent<TopRailProps> {
                 pathstr += `A ${holeSize / 2} ${holeSize / 2} 0 0 1 ${x + holeSize} ${offset}`
                 pathstr += `A ${holeSize / 2} ${holeSize / 2} 0 0 1 ${x} ${offset}`
             }
+
+            yFrontFirstX += outsideBuffer;
+            yFrontSecondX += outsideBuffer;
+            yBackFirstX += outsideBuffer;
+            yBackSecondX += outsideBuffer;
         } else {
-            yFrontFirstX = trackWidth - yFrontFirstX;
-            yFrontSecondX = trackWidth - yFrontSecondX;
-            yBackFirstX = trackWidth - yBackFirstX;
-            yBackSecondX = trackWidth - yBackSecondX;
+            yFrontFirstX = trackWidth - yFrontFirstX - outsideBuffer;
+            yFrontSecondX = trackWidth - yFrontSecondX - outsideBuffer;
+            yBackFirstX = trackWidth - yBackFirstX - outsideBuffer;
+            yBackSecondX = trackWidth - yBackSecondX - outsideBuffer;
         }
 
-        pathstr += `M ${yFrontSetback - (holeSize / 2)} ${yFrontFirstX}`;
+        pathstr += `M ${yFrontSetback - (holeSize / 2)} ${yFrontFirstX + outsideBuffer}`;
         pathstr += `A ${holeSize / 2} ${holeSize / 2} 0 0 1 ${yFrontSetback + (holeSize / 2)} ${yFrontFirstX}`
         pathstr += `A ${holeSize / 2} ${holeSize / 2} 0 0 1 ${yFrontSetback - (holeSize / 2)} ${yFrontFirstX}`
 
-        pathstr += `M ${yFrontSetback - (holeSize / 2)} ${yFrontSecondX}`;
+        pathstr += `M ${yFrontSetback - (holeSize / 2)} ${yFrontSecondX + outsideBuffer}`;
         pathstr += `A ${holeSize / 2} ${holeSize / 2} 0 0 1 ${yFrontSetback + (holeSize / 2)} ${yFrontSecondX}`
         pathstr += `A ${holeSize / 2} ${holeSize / 2} 0 0 1 ${yFrontSetback - (holeSize / 2)} ${yFrontSecondX}`
 

@@ -11,7 +11,9 @@ export default class XSpar extends SVGComponent<XSparProps> {
         const flatBuffer = this.props.table.flatBuffer;
         const railBuffer = this.props.table.railBuffer;
         const xShrink = this.props.table.xSparRailShrink;
-        const xCut = this.props.table.xCut + flatBuffer + railBuffer - xShrink;
+        const flatOutsideBuffer = this.props.table.flatOutsideBuffer;
+        const railOutsideBuffer = this.props.table.railOutsideBuffer;
+        const xCut = this.props.table.xCut + flatBuffer + railBuffer - xShrink + flatOutsideBuffer + railOutsideBuffer;
         const thickness = this.props.table.thickness;
         const material = this.props.table.material;
         const yMortises = this.props.table.ySparCount;
@@ -20,7 +22,7 @@ export default class XSpar extends SVGComponent<XSparProps> {
 
 
         let pathstr = '';
-        const start = flatBuffer + overhang - (xShrink / 2);
+        const start = flatBuffer + flatOutsideBuffer + overhang - (xShrink / 2);
         if (start == 0) {
             pathstr += `M 0 ${thickness / 2}`;
         } else {

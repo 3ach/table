@@ -12,6 +12,10 @@ export interface TableEditable {
     overhang: number;
     material: number;
     trackCutPoint: number;
+    flatOutsideBuffer: number;
+    flatInsideBuffer: number;
+    railOutsideBuffer: number;
+    railInsideBuffer: number;
 }
 
 export class Table implements TableEditable {
@@ -25,10 +29,31 @@ export class Table implements TableEditable {
     overhang: number;
     material: number;
     trackCutPoint: number;
+    flatOutsideBuffer: number;
+    flatInsideBuffer: number;
+    railOutsideBuffer: number;
+    railInsideBuffer: number;
     units: Units;
     configuration: Configuration;
 
-    constructor(xCut: number, yCut: number, xSparMinGap: number, ySparMinGap: number, clipMinGap: number, thickness: number, railMaterialThickness: number, material: number, overhang: number, trackCutPoint: number, units: Units, configuration: Configuration) {
+    constructor(
+        xCut: number, 
+        yCut: number, 
+        xSparMinGap: number, 
+        ySparMinGap: number, 
+        clipMinGap: number, 
+        thickness: number, 
+        railMaterialThickness: number, 
+        material: number, 
+        overhang: number, 
+        trackCutPoint: number, 
+        flatOutsideBuffer: number,
+        flatInsideBuffer: number,
+        railOutsideBuffer: number,
+        railInsideBuffer: number,
+        units: Units, 
+        configuration: Configuration
+    ) {
         this.xCut = xCut;
         this.yCut = yCut,
         this.xSparMinGap = xSparMinGap;
@@ -39,6 +64,10 @@ export class Table implements TableEditable {
         this.overhang = overhang;
         this.material = material;
         this.trackCutPoint = trackCutPoint;
+        this.flatOutsideBuffer = flatOutsideBuffer;
+        this.flatInsideBuffer = flatInsideBuffer;
+        this.railOutsideBuffer = railOutsideBuffer;
+        this.railInsideBuffer = railInsideBuffer;
         this.units = units;
         this.configuration = configuration;
     }
@@ -172,7 +201,7 @@ export class Table implements TableEditable {
             "mm": 40,
             "cm": 4,
             "in": 40 / 25.4, 
-        }[this.units] ;
+        }[this.units] + this.flatInsideBuffer + this.flatOutsideBuffer;
     }
 
     get railTrackWidth(): number {
@@ -180,7 +209,7 @@ export class Table implements TableEditable {
             "mm": 75,
             "cm": 7.5,
             "in": 75 / 25.4, 
-        }[this.units] ;
+        }[this.units] + this.railInsideBuffer + this.railOutsideBuffer;
     }
 
     get inMillimeters(): Table {
@@ -201,6 +230,10 @@ export class Table implements TableEditable {
             convert(this.material),
             convert(this.overhang),
             convert(this.trackCutPoint),
+            convert(this.flatOutsideBuffer),
+            convert(this.flatInsideBuffer),
+            convert(this.railOutsideBuffer),
+            convert(this.railInsideBuffer),
             "mm",
             this.configuration,
         )
@@ -224,6 +257,10 @@ export class Table implements TableEditable {
             convert(this.material),
             convert(this.overhang),
             convert(this.trackCutPoint),
+            convert(this.flatOutsideBuffer),
+            convert(this.flatInsideBuffer),
+            convert(this.railOutsideBuffer),
+            convert(this.railInsideBuffer),
             "cm",
             this.configuration,
         )
@@ -247,6 +284,10 @@ export class Table implements TableEditable {
             convert(this.material),
             convert(this.overhang),
             convert(this.trackCutPoint),
+            convert(this.flatOutsideBuffer),
+            convert(this.flatInsideBuffer),
+            convert(this.railOutsideBuffer),
+            convert(this.railInsideBuffer),
             "in",
             this.configuration,
         )

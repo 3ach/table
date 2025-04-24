@@ -24,6 +24,10 @@ export default function TablePropEditor(props: TablePropEditorProps) {
             props.table.material,
             props.table.overhang,
             props.table.trackCutPoint,
+            props.table.flatOutsideBuffer,
+            props.table.flatInsideBuffer,
+            props.table.railOutsideBuffer,
+            props.table.railInsideBuffer,
             props.table.units,
             props.table.configuration,
         );

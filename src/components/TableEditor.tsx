@@ -18,6 +18,10 @@ function propertyNameToLabel(name: keyof TableEditable): string {
         case "overhang": return "Tabletop overhang";
         case "clipMinGap": return "Minimum Rail Clip Gap";
         case "trackCutPoint": return "Rail Max Length per Piece"
+        case "flatInsideBuffer": return "Flat rail inside buffer"
+        case "flatOutsideBuffer": return "Flat rail outside buffer"
+        case "railInsideBuffer": return "Tube rail inside buffer"
+        case "railOutsideBuffer": return "Tube rail outside buffer"
     }
 }
 
@@ -115,6 +119,34 @@ export default function TableEditor(props: TableEditorProps) {
             <TablePropEditor
                 itemName={propertyNameToLabel("trackCutPoint")}
                 propName="trackCutPoint"
+                table={props.table}
+                updateTable={props.updateTable}
+            />
+        </div>
+        <div className="inline-block p-1.5">
+            <TablePropEditor
+                itemName={propertyNameToLabel("flatInsideBuffer")}
+                propName="flatInsideBuffer"
+                table={props.table}
+                updateTable={props.updateTable}
+            />
+            <TablePropEditor
+                itemName={propertyNameToLabel("flatOutsideBuffer")}
+                propName="flatOutsideBuffer"
+                table={props.table}
+                updateTable={props.updateTable}
+            />
+        </div>
+        <div className="inline-block p-1.5">
+            <TablePropEditor
+                itemName={propertyNameToLabel("railInsideBuffer")}
+                propName="railInsideBuffer"
+                table={props.table}
+                updateTable={props.updateTable}
+            />
+            <TablePropEditor
+                itemName={propertyNameToLabel("railOutsideBuffer")}
+                propName="railOutsideBuffer"
                 table={props.table}
                 updateTable={props.updateTable}
             />
