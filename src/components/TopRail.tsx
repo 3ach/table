@@ -84,11 +84,11 @@ export default class TopRail extends SVGComponent<TopRailProps> {
             yBackSecondX = trackWidth - yBackSecondX - outsideBuffer;
         }
 
-        pathstr += `M ${yFrontSetback - (holeSize / 2)} ${yFrontFirstX + outsideBuffer}`;
+        pathstr += `M ${yFrontSetback - (holeSize / 2)} ${yFrontFirstX}`;
         pathstr += `A ${holeSize / 2} ${holeSize / 2} 0 0 1 ${yFrontSetback + (holeSize / 2)} ${yFrontFirstX}`
         pathstr += `A ${holeSize / 2} ${holeSize / 2} 0 0 1 ${yFrontSetback - (holeSize / 2)} ${yFrontFirstX}`
 
-        pathstr += `M ${yFrontSetback - (holeSize / 2)} ${yFrontSecondX + outsideBuffer}`;
+        pathstr += `M ${yFrontSetback - (holeSize / 2)} ${yFrontSecondX}`;
         pathstr += `A ${holeSize / 2} ${holeSize / 2} 0 0 1 ${yFrontSetback + (holeSize / 2)} ${yFrontSecondX}`
         pathstr += `A ${holeSize / 2} ${holeSize / 2} 0 0 1 ${yFrontSetback - (holeSize / 2)} ${yFrontSecondX}`
 
