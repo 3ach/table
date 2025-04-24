@@ -17,7 +17,8 @@ export default function TableLayout(props: TableLayoutProps) {
     const materialThickness = props.table.material
     const kerfWidth = materialThickness / 2;
     const yCut = props.table.yCut;
-    const trackWidth = props.table.trackWidth;
+    const flatTrackWidth = props.table.flatTrackWidth;
+    const railTrackWidth = props.table.railTrackWidth;
     const configuration = props.table.configuration;
     const xSparCount = props.table.xSparCount;
     const ySparCount = props.table.ySparCount;
@@ -43,20 +44,20 @@ export default function TableLayout(props: TableLayoutProps) {
 
     const firstRail = ((kerfWidth + tableThickness) * (xSparCount + ySparCount)) + (strokeWidth / 2);
     const width = yCut + strokeWidth + yBuffer;
-    const height =  (tableThickness + strokeWidth) * (ySparCount + xSparCount) + (4 * kerfWidth) + (2 * (trackWidth + tableThickness));
+    const height =  (tableThickness + strokeWidth) * (ySparCount + xSparCount) + (4 * kerfWidth) + (2 * tableThickness) + flatTrackWidth + railTrackWidth;
     const viewBox = `0 0 ${width} ${height * 1.5}`
 
     let rails = [];
     if (configuration == "LR4") {
         rails.push(<TopRail key={"rail-top"} table={props.table} x={strokeWidth / 2} y={firstRail} rotation={0} strokeWidth={strokeWidth} rail={true} />);
-        rails.push(<TopRail key={"flat-top"} table={props.table} x={strokeWidth / 2} y={firstRail + trackWidth + kerfWidth} rotation={0} strokeWidth={strokeWidth} rail={false} />);
-        rails.push(<SideRail key={"rail-side"} table={props.table} x={strokeWidth / 2} y={firstRail + (2 * (trackWidth + kerfWidth))} rotation={0} strokeWidth={strokeWidth} />);
-        rails.push(<SideRail key={"flat-side"} table={props.table} x={strokeWidth / 2} y={firstRail + (2 * (trackWidth + kerfWidth)) + tableThickness + kerfWidth} rotation={0} strokeWidth={strokeWidth} />);
+        rails.push(<TopRail key={"flat-top"} table={props.table} x={strokeWidth / 2} y={firstRail + railTrackWidth + kerfWidth} rotation={0} strokeWidth={strokeWidth} rail={false} />);
+        rails.push(<SideRail key={"rail-side"} table={props.table} x={strokeWidth / 2} y={firstRail + (2 * kerfWidth) + railTrackWidth + flatTrackWidth} rotation={0} strokeWidth={strokeWidth} />);
+        rails.push(<SideRail key={"flat-side"} table={props.table} x={strokeWidth / 2} y={firstRail + (2 * kerfWidth) + railTrackWidth + flatTrackWidth + tableThickness + kerfWidth} rotation={0} strokeWidth={strokeWidth} />);
     }
 
     let testPartY = firstRail;
     if (configuration == "LR4") {
-        testPartY = firstRail + (2 * (trackWidth + kerfWidth)) + (2 * (tableThickness + kerfWidth));
+        testPartY = firstRail + (2 * kerfWidth) + flatTrackWidth + railTrackWidth + (2 * (tableThickness + kerfWidth));
     }
 
     return (

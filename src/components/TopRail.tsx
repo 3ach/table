@@ -12,7 +12,7 @@ export default class TopRail extends SVGComponent<TopRailProps> {
         const length = this.props.table.yCut + this.props.table.yBuffer;
         const maxLength = this.props.table.trackCutPoint;
         const sparInset = this.props.table.overhang + (this.props.table.yBuffer / 2);
-        const trackWidth = this.props.table.trackWidth;
+        const trackWidth = this.props.rail ? this.props.table.railTrackWidth : this.props.table.flatTrackWidth;
         const holeSize = this.props.table.holeSize;
         const material = this.props.table.material;
         const xSparGap = this.props.table.xSparGap;

@@ -87,20 +87,6 @@ export class Table implements TableEditable {
         return 0;
     }
 
-    /*
-    get xBuffer(): number {
-        if (this.configuration == "LR4") {
-            switch (this.units) {
-                case 'in': return 11.5;
-                case 'mm': return 292;
-                case 'cm': return 29.2;
-            }
-        }
-
-        return 0;
-    }
-    */
-
     get yBuffer(): number {
         if (this.configuration == "LR4") {
             switch (this.units) {
@@ -181,11 +167,19 @@ export class Table implements TableEditable {
         }[this.configuration]
     }
 
-    get trackWidth(): number {
+    get flatTrackWidth(): number {
         return {
-            "mm": 80,
-            "cm": 8,
-            "in": 80 / 25.4, 
+            "mm": 40,
+            "cm": 4,
+            "in": 40 / 25.4, 
+        }[this.units] ;
+    }
+
+    get railTrackWidth(): number {
+        return {
+            "mm": 75,
+            "cm": 7.5,
+            "in": 75 / 25.4, 
         }[this.units] ;
     }
 
