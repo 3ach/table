@@ -63,6 +63,31 @@ export class Table implements TableEditable {
         return Math.ceil((widthToDivide - this.material) / this.xSparMinGap) + 1;
     }
 
+    get flatBuffer(): number {
+        if (this.configuration == "LR4") {
+            switch (this.units) {
+                case 'in': return 157 / 25.4;
+                case 'mm': return 157;
+                case 'cm': return 15.7;
+            }
+        }
+
+        return 0;
+    }
+
+    get railBuffer(): number {
+        if (this.configuration == "LR4") {
+            switch (this.units) {
+                case 'in': return 133 / 25.4;
+                case 'mm': return 133;
+                case 'cm': return 13.3;
+            }
+        }
+
+        return 0;
+    }
+
+    /*
     get xBuffer(): number {
         if (this.configuration == "LR4") {
             switch (this.units) {
@@ -74,6 +99,7 @@ export class Table implements TableEditable {
 
         return 0;
     }
+    */
 
     get yBuffer(): number {
         if (this.configuration == "LR4") {

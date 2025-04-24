@@ -8,9 +8,10 @@ interface XSparProps extends SVGProps {
 
 export default class XSpar extends SVGComponent<XSparProps> {
     svg() {
-        const xBuffer = this.props.table.xBuffer;
+        const flatBuffer = this.props.table.flatBuffer;
+        const railBuffer = this.props.table.railBuffer;
         const xShrink = this.props.table.xSparRailShrink;
-        const xCut = this.props.table.xCut + xBuffer - xShrink;
+        const xCut = this.props.table.xCut + flatBuffer + railBuffer - xShrink;
         const thickness = this.props.table.thickness;
         const material = this.props.table.material;
         const yMortises = this.props.table.ySparCount;
@@ -19,7 +20,7 @@ export default class XSpar extends SVGComponent<XSparProps> {
 
 
         let pathstr = '';
-        const start = (xBuffer / 2) + overhang - (xShrink / 2);
+        const start = flatBuffer + overhang - (xShrink / 2);
         if (start == 0) {
             pathstr += `M 0 ${thickness / 2}`;
         } else {
