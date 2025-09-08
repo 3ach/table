@@ -146,7 +146,7 @@ export class Table implements TableEditable {
 
     get backHoleCoordinates(): [number, number, number, number] {
         return {
-            "mm": [15, 15, 8.25, 24.25],
+            "mm": [15, 7.75, 8.25, 24.25],
             "cm": [15 / 10, 7.75 / 10, 8.25 / 10, 24.25 / 10],
             "in": [15 / 25.4, 7.75 / 25.4, 8.25 / 25.4, 24.25 / 25.4],
         }[this.units] as [number, number, number, number];
