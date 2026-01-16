@@ -30,7 +30,7 @@ export default class XSpar extends SVGComponent<XSparProps> {
         }
 
         for (let mortise = 0; mortise < yMortises; mortise++) {
-            let x = (mortise * yGap) + start;
+            const x = (mortise * yGap) + start;
             if (x != 0) {
                 pathstr += `L ${x} 0`; 
             }

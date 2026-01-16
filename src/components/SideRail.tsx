@@ -28,7 +28,7 @@ export default class SideRail extends SVGComponent<SideRailProps> {
             pathstr += `M ${length - sparInset} ${thickness * 0.25}`;
             pathstr += `L ${length - sparInset} ${thickness * 0.75}`;
         } else {
-            let buffer = material / 2;
+            const buffer = material / 2;
             let firstLength = maxLength;
             const safeCutPoint = xSparGap + (4 * material) + sparInset;
             if (length - firstLength < safeCutPoint) {

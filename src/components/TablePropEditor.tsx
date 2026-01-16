@@ -9,11 +9,11 @@ type TablePropEditorProps = {
 }
 
 export default function TablePropEditor(props: TablePropEditorProps) {
-    let [value, setValue] = useState(props.table[props.propName].toString());
-    let [pending, setPending] = useState(false);
+    const [value, setValue] = useState(props.table[props.propName].toString());
+    const [pending, setPending] = useState(false);
 
     const update = (valueStr: string) => {
-        let newTable = new Table(
+        const newTable = new Table(
             props.table.xCut,
             props.table.yCut,
             props.table.xSparMinGap,
@@ -44,7 +44,7 @@ export default function TablePropEditor(props: TablePropEditorProps) {
         }
     }
 
-    let currentValue = pending ? value : props.table[props.propName];
+    const currentValue = pending ? value : props.table[props.propName];
 
     return (
         <>

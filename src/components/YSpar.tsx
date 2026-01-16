@@ -18,7 +18,7 @@ export default class YSpar extends SVGComponent<YSparProps> {
         let pathstr = `M 0 0`
         pathstr += `L 0 ${thickness / 2}`; 
         for (let mortise = 0; mortise < xMortises; mortise++) {
-            let x = (mortise * xGap);
+            const x = (mortise * xGap);
             pathstr += `L ${x + material} ${thickness / 2}`; 
             pathstr += `L ${x + material} ${thickness}`; 
             pathstr += `L ${x + xGap} ${thickness}`; 

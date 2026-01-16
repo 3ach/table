@@ -18,6 +18,7 @@ export default class TopRail extends SVGComponent<TopRailProps> {
         const material = this.props.table.material;
         const xSparGap = this.props.table.xSparGap;
         const buffer = length > maxLength ? material / 2 : 0;
+
         let [yFrontSetback, yFrontFirstX, yFrontSecondX] = this.props.table.frontHoleCoordinates;
         let [yBackFirstSetback, yBackSecondSetback, yBackFirstX, yBackSecondX] = this.props.table.backHoleCoordinates;
 

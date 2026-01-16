@@ -55,7 +55,7 @@ export class Table implements TableEditable {
         configuration: Configuration
     ) {
         this.xCut = xCut;
-        this.yCut = yCut,
+        this.yCut = yCut;
         this.xSparMinGap = xSparMinGap;
         this.ySparMinGap = ySparMinGap;
         this.clipMinGap = clipMinGap;

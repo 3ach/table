@@ -25,19 +25,19 @@ export default function TableLayout(props: TableLayoutProps) {
     const ySparCount = props.table.ySparCount;
     const yBuffer = props.table.yBuffer;
 
-    let ySpars = [];
+    const ySpars = [];
 
     for (let spar = 0; spar < ySparCount; spar++) {
-        let y = ((kerfWidth + tableThickness) * spar) + (strokeWidth / 2);
+        const y = ((kerfWidth + tableThickness) * spar) + (strokeWidth / 2);
         ySpars.push(
             <YSpar key={`spar-${spar}`} table={props.table} x={strokeWidth / 2} y={y} rotation={0} strokeWidth={strokeWidth}/>
         );
     }
 
-    let xSpars = [];
+    const xSpars = [];
 
     for (let spar = 0; spar < xSparCount; spar++) {
-        let y = ((kerfWidth + tableThickness) * (spar + ySparCount)) + (strokeWidth / 2);
+        const y = ((kerfWidth + tableThickness) * (spar + ySparCount)) + (strokeWidth / 2);
         xSpars.push(
             <XSpar key={`spar-${spar}`} table={props.table} x={strokeWidth / 2} y={y} rotation={0} strokeWidth={strokeWidth}/>
         );
@@ -48,7 +48,7 @@ export default function TableLayout(props: TableLayoutProps) {
     const height =  (tableThickness + strokeWidth) * (ySparCount + xSparCount) + (4 * kerfWidth) + (2 * tableThickness) + flatTrackWidth + railTrackWidth;
     const viewBox = `0 0 ${width} ${height * 1.5}`
 
-    let rails = [];
+    const rails = [];
     if (configuration == "LR4") {
         rails.push(<TopRail key={"rail-top"} table={props.table} x={strokeWidth / 2} y={firstRail} rotation={0} strokeWidth={strokeWidth} rail={true} />);
         rails.push(<TopRail key={"flat-top"} table={props.table} x={strokeWidth / 2} y={firstRail + railTrackWidth + kerfWidth} rotation={0} strokeWidth={strokeWidth} rail={false} />);
@@ -61,7 +61,7 @@ export default function TableLayout(props: TableLayoutProps) {
         testPartY = firstRail + (2 * kerfWidth) + flatTrackWidth + railTrackWidth + (2 * (tableThickness + kerfWidth));
     }
 
-	let calibrationSquareX = (strokeWidth / 2) + (7 * materialThickness);
+	const calibrationSquareX = (strokeWidth / 2) + (7 * materialThickness);
 
     return (
         <>

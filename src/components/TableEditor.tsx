@@ -34,7 +34,7 @@ function updateUnits(table: Table, target: Units): Table {
 }
 
 export default function TableEditor(props: TableEditorProps) {
-    let updateConfiguration = (configuration: Configuration) => {
+    const updateConfiguration = (configuration: Configuration) => {
         let overhang = 0;
         if (configuration == 'LR4') {
             overhang = {
