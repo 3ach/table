@@ -35,6 +35,7 @@ function App() {
           <TableEditor table={table} updateTable={setTable} />
           <SVGDownloadButton className="real-size-layout" />
         </div>
+	  	<p>Calibration square is {table.calibrationSquareSize} {table.units}</p>
       <hr className="p-3 w-screen"/>
       <div className='grow' id='real-size-layout'>
         <TableLayout table={table} strokeWidth={strokeWidth} />

@@ -212,6 +212,14 @@ export class Table implements TableEditable {
         }[this.units] + this.railInsideBuffer + this.railOutsideBuffer;
     }
 
+    get calibrationSquareSize(): number {
+        return {
+            "mm": 25,
+            "cm": 2.5,
+            "in": 1, 
+        }[this.units];
+    }
+
     get inMillimeters(): Table {
         const convert = {
             "mm": (x: number) => x,

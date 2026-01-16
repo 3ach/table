@@ -4,6 +4,7 @@ import XSpar from './XSpar';
 import TopRail from './TopRail';
 import SideRail from './SideRail';
 import TestParts from './TestParts';
+import CalibrationSquare from './CalibrationSquare';
 
 type TableLayoutProps = {
     table: Table,
@@ -60,6 +61,8 @@ export default function TableLayout(props: TableLayoutProps) {
         testPartY = firstRail + (2 * kerfWidth) + flatTrackWidth + railTrackWidth + (2 * (tableThickness + kerfWidth));
     }
 
+	let calibrationSquareX = (strokeWidth / 2) + (7 * materialThickness);
+
     return (
         <>
             <svg xmlns="http://www.w3.org/2000/svg" className="max-h-screen max-w-screen w-screen" viewBox={viewBox} preserveAspectRatio="xMinYMin" version="1.1">
@@ -67,6 +70,7 @@ export default function TableLayout(props: TableLayoutProps) {
                 {xSpars}
                 {rails}
                 <TestParts table={props.table} x={strokeWidth / 2} y={testPartY} rotation={0} strokeWidth={strokeWidth} />
+				<CalibrationSquare table={props.table} x={calibrationSquareX} y={testPartY} rotation={0} strokeWidth={strokeWidth} />
             </svg>
         </>
     )
