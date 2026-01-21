@@ -16,15 +16,15 @@ export default class YSpar extends SVGComponent<YSparProps> {
         const xGap = this.props.table.xSparGap;
 
         let pathstr = `M 0 0`
-        pathstr += `L 0 ${thickness / 2}`; 
+        pathstr += `L 0 ${(thickness / 2) - (thickness / 50)}`; 
         for (let mortise = 0; mortise < xMortises; mortise++) {
             const x = (mortise * xGap);
-            pathstr += `L ${x + material} ${thickness / 2}`; 
+            pathstr += `L ${x + material} ${(thickness / 2) - (thickness / 50)}`; 
             pathstr += `L ${x + material} ${thickness}`; 
             pathstr += `L ${x + xGap} ${thickness}`; 
-            pathstr += `L ${x + xGap} ${thickness / 2}`; 
+            pathstr += `L ${x + xGap} ${(thickness / 2) - (thickness / 50)}`; 
         }
-        pathstr += `L ${yCut} ${thickness / 2}`
+        pathstr += `L ${yCut} ${(thickness / 2) - (thickness / 50)}`
         pathstr += `L ${yCut} 0`
         pathstr += 'z'
 

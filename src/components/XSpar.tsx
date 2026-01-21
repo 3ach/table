@@ -20,11 +20,10 @@ export default class XSpar extends SVGComponent<XSparProps> {
         const overhang = this.props.table.overhang;
         const yGap = this.props.table.ySparGap;
 
-
         let pathstr = '';
         const start = flatBuffer + flatOutsideBuffer + overhang - (xShrink / 2);
         if (start == 0) {
-            pathstr += `M 0 ${thickness / 2}`;
+            pathstr += `M 0 ${(thickness / 2) + (thickness / 50)}`;
         } else {
             pathstr += `M 0 0`;
         }
@@ -34,8 +33,8 @@ export default class XSpar extends SVGComponent<XSparProps> {
             if (x != 0) {
                 pathstr += `L ${x} 0`; 
             }
-            pathstr += `L ${x} ${thickness / 2}`; 
-            pathstr += `L ${x + material} ${thickness / 2}`; 
+            pathstr += `L ${x} ${(thickness / 2) + (thickness / 50)}`; 
+            pathstr += `L ${x + material} ${(thickness / 2) + (thickness / 50)}`; 
 
             if (x + material != xCut) {
                 pathstr += `L ${x + material} 0`; 
