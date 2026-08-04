@@ -45,10 +45,13 @@ export default function TableEditor(props: TableEditorProps) {
             }[props.table.units];
         }
 
-        props.table.overhang = overhang;
-        props.table.configuration = configuration;
-
-        props.updateTable(props.table)
+        // A fresh Table, not a mutation of the current one: React bails out of
+        // re-rendering if it is handed back the same object.
+        props.updateTable(Table.fromSnapshot({
+            ...props.table.snapshot,
+            overhang,
+            configuration,
+        }))
     };
 
 
@@ -163,7 +166,7 @@ export default function TableEditor(props: TableEditorProps) {
                 Units: {'  '}
                 <select
                     className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none  focus:outline-none focus:ring-0 focus:border-gray-200 peer"
-                    defaultValue={props.table.units} 
+                    value={props.table.units}
                     onChange={(e) => props.updateTable(updateUnits(props.table, e.target.value as Units))}
                 >
                     <option value='in'>in</option>
@@ -175,7 +178,7 @@ export default function TableEditor(props: TableEditorProps) {
                 Configuration {'  '}
                 <select
                     className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none  focus:outline-none focus:ring-0 focus:border-gray-200 peer"
-                    defaultValue={props.table.units} 
+                    value={props.table.configuration}
                     onChange={(e) => updateConfiguration(e.target.value as Configuration)}
                 >
                     <option value='LR4'>Lowrider 4</option>

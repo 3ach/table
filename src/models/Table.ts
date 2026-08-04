@@ -19,6 +19,91 @@ export interface TableEditable {
     bitDiameter: number;
 }
 
+// A Table serialized down to plain data: every editable dimension plus the
+// units they are expressed in and the machine configuration. This is the shape
+// written to localStorage and to exported .json files.
+export interface TableSnapshot extends TableEditable {
+    units: Units;
+    configuration: Configuration;
+}
+
+// Every numeric field of TableEditable. Snapshots are read and written by name
+// through this list rather than through the positional constructor, so adding a
+// dimension only means adding it here (and to propertyNameToLabel).
+export const tableNumericFields: (keyof TableEditable)[] = [
+    "xCut",
+    "yCut",
+    "xSparMinGap",
+    "ySparMinGap",
+    "clipMinGap",
+    "thickness",
+    "railMaterialThickness",
+    "overhang",
+    "material",
+    "trackCutPoint",
+    "flatOutsideBuffer",
+    "flatInsideBuffer",
+    "railOutsideBuffer",
+    "railInsideBuffer",
+    "bitDiameter",
+];
+
+// The stock Lowrider 4 table, in inches.
+export function defaultTable(): Table {
+    return new Table(
+        49,
+        97,
+        12,
+        12,
+        11.75,
+        3,
+        0.75,
+        0.75,
+        1,
+        95,
+        0,
+        0.5,
+        0,
+        0.25,
+        0.125,
+        "in",
+        "LR4",
+    );
+}
+
+// Validates untrusted data (a parsed .json file, or whatever is in
+// localStorage) into a TableSnapshot, or returns null if it is not one.
+export function parseTableSnapshot(raw: unknown): TableSnapshot | null {
+    if (typeof raw !== "object" || raw === null) {
+        return null;
+    }
+
+    const data = raw as Record<string, unknown>;
+
+    if (data.units !== "mm" && data.units !== "cm" && data.units !== "in") {
+        return null;
+    }
+
+    if (data.configuration !== "LR4" && data.configuration !== "none") {
+        return null;
+    }
+
+    const snapshot = {
+        units: data.units,
+        configuration: data.configuration,
+    } as TableSnapshot;
+
+    for (const field of tableNumericFields) {
+        const value = data[field];
+        if (typeof value !== "number" || !Number.isFinite(value)) {
+            return null;
+        }
+        snapshot[field] = value;
+    }
+
+    return snapshot;
+}
+
 export class Table implements TableEditable {
     xCut: number;
     yCut: number;
@@ -74,6 +159,34 @@ export class Table implements TableEditable {
         this.bitDiameter = bitDiameter;
         this.units = units;
         this.configuration = configuration;
+    }
+
+    get snapshot(): TableSnapshot {
+        const snapshot = {
+            units: this.units,
+            configuration: this.configuration,
+        } as TableSnapshot;
+
+        for (const field of tableNumericFields) {
+            snapshot[field] = this[field];
+        }
+
+        return snapshot;
+    }
+
+    // Rebuilds a Table from plain data by field name, so callers never have to
+    // get the constructor's argument order right.
+    static fromSnapshot(snapshot: TableSnapshot): Table {
+        const table = defaultTable();
+
+        for (const field of tableNumericFields) {
+            table[field] = snapshot[field];
+        }
+
+        table.units = snapshot.units;
+        table.configuration = snapshot.configuration;
+
+        return table;
     }
 
     get ySparCount(): number {

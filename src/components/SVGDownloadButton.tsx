@@ -1,4 +1,5 @@
 import { Units } from '../models/Table';
+import { downloadBlob } from '../lib/download';
 
 export default function SVGDownloadButton(props: {className: string, units: Units}) {
   const handleDownload = () => {
@@ -33,24 +34,7 @@ export default function SVGDownloadButton(props: {className: string, units: Unit
     // Serialize the cleaned-up SVG.
     const svgContent = new XMLSerializer().serializeToString(clone);
 
-    // Create a Blob from the SVG content
-    const blob = new Blob([svgContent], { type: 'image/svg+xml' });
-
-    // Create a URL for the Blob
-    const url = URL.createObjectURL(blob);
-
-    // Create a temporary link element
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'layout.svg';
-
-    // Append link to body, click it, and remove it
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    // Clean up the URL object
-    URL.revokeObjectURL(url);
+    downloadBlob(new Blob([svgContent], { type: 'image/svg+xml' }), 'layout.svg');
   };
 
   return (

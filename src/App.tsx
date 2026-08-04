@@ -1,31 +1,19 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 
 import TableLayout from './components/TableLayout';
 import TableEditor from './components/TableEditor';
 import { Table } from './models/Table';
 import SVGDownloadButton from './components/SVGDownloadButton';
+import TableConfigButtons from './components/TableConfigButtons';
+import { loadTable, saveTable } from './lib/storage';
 
 function App() {
-  const [table, setTable] = useState<Table>(new Table(
-    49,
-    97,
-    12,
-    12,
-    11.75,
-    3,
-    0.75,
-    0.75,
-    1,
-    95,
-    0, 
-    0.5,
-    0,
-    0.25,
-    0.125,
-    "in",
-    "LR4",
-  ));
+  // Start from whatever was last used in this browser, falling back to the
+  // stock table, and write every change back.
+  const [table, setTable] = useState<Table>(loadTable);
+
+  useEffect(() => saveTable(table), [table]);
 
   const strokeWidth = 1;
 
@@ -35,6 +23,7 @@ function App() {
         <div className="inline-block">
           <TableEditor table={table} updateTable={setTable} />
           <SVGDownloadButton className="real-size-layout" units={table.units} />
+          <TableConfigButtons table={table} updateTable={setTable} />
         </div>
 	  	<p>Calibration square is {table.calibrationSquareSize} {table.units}</p>
       <hr className="p-3 w-screen"/>
