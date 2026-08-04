@@ -21,12 +21,12 @@ export default class XSpar extends SVGComponent<XSparProps> {
         const overhang = this.props.table.overhang;
         const yGap = this.props.table.ySparGap;
         const r = this.props.table.dogBoneRadius;
-        const depth = (thickness / 2) + (thickness / 50);
+        const depth = thickness / 2;
 
         let pathstr = '';
         const start = flatBuffer + flatOutsideBuffer + overhang - (xShrink / 2);
         if (start == 0) {
-            pathstr += `M 0 ${(thickness / 2) + (thickness / 50)}`;
+            pathstr += `M 0 ${depth}`;
         } else {
             pathstr += `M 0 0`;
         }

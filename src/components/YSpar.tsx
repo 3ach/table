@@ -16,7 +16,7 @@ export default class YSpar extends SVGComponent<YSparProps> {
         const xMortises = this.props.table.xSparCount - 1;
         const xGap = this.props.table.xSparGap;
         const r = this.props.table.dogBoneRadius;
-        const depth = (thickness / 2) - (thickness / 50);
+        const depth = thickness / 2;
 
         let pathstr = `M 0 0`
         pathstr += `L 0 ${depth}`;
