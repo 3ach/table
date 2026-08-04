@@ -44,9 +44,6 @@ export default function TableLayout(props: TableLayoutProps) {
     }
 
     const firstRail = ((kerfWidth + tableThickness) * (xSparCount + ySparCount)) + (strokeWidth / 2);
-    const width = yCut + strokeWidth + yBuffer;
-    const height =  (tableThickness + strokeWidth) * (ySparCount + xSparCount) + (4 * kerfWidth) + (2 * tableThickness) + flatTrackWidth + railTrackWidth;
-    const viewBox = `0 0 ${width} ${height * 1.5}`
 
     const rails = [];
     if (configuration == "LR4") {
@@ -63,14 +60,32 @@ export default function TableLayout(props: TableLayoutProps) {
 
 	const calibrationSquareX = (strokeWidth / 2) + (7 * materialThickness);
 
+    // Exact extent of the drawn parts, so the view fits them with no dead space.
+    // Rails that are too long for the sheet are split into two pieces, the
+    // second of which sits a kerf further right than the rail's own length.
+    const railLength = yCut + yBuffer;
+    const railSplitBuffer = railLength > props.table.trackCutPoint ? kerfWidth : 0;
+    const contentWidth = railLength + railSplitBuffer + strokeWidth;
+    // The test parts and the calibration square share the last row.
+    const lastRowHeight = Math.max(tableThickness, props.table.calibrationSquareSize);
+    const contentHeight = testPartY + lastRowHeight + (strokeWidth / 2);
+
+    // Stand the sheet up: a quarter turn counter-clockwise maps (x, y) to
+    // (y, contentWidth - x), so the width and height of the view swap. Doing it
+    // here rather than in CSS keeps the SVG's aspect ratio honest, so it scales
+    // to fit its container, and keeps the downloaded file at real-world size.
+    const viewBox = `0 0 ${contentHeight} ${contentWidth}`;
+
     return (
         <>
-            <svg xmlns="http://www.w3.org/2000/svg" className="max-h-screen max-w-screen w-screen" viewBox={viewBox} preserveAspectRatio="xMinYMin" version="1.1">
-                {ySpars}
-                {xSpars}
-                {rails}
-                <TestParts table={props.table} x={strokeWidth / 2} y={testPartY} rotation={0} strokeWidth={strokeWidth} />
-				<CalibrationSquare table={props.table} x={calibrationSquareX} y={testPartY} rotation={0} strokeWidth={strokeWidth} />
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-full w-full" viewBox={viewBox} preserveAspectRatio="xMidYMid meet" version="1.1">
+                <g transform={`translate(0, ${contentWidth}) rotate(-90)`}>
+                    {ySpars}
+                    {xSpars}
+                    {rails}
+                    <TestParts table={props.table} x={strokeWidth / 2} y={testPartY} rotation={0} strokeWidth={strokeWidth} />
+                    <CalibrationSquare table={props.table} x={calibrationSquareX} y={testPartY} rotation={0} strokeWidth={strokeWidth} />
+                </g>
             </svg>
         </>
     )

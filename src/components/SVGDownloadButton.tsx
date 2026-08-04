@@ -1,5 +1,6 @@
 import { Units } from '../models/Table';
 import { downloadBlob } from '../lib/download';
+import { buttonClasses } from '../lib/styles';
 
 export default function SVGDownloadButton(props: {className: string, units: Units}) {
   const handleDownload = () => {
@@ -38,20 +39,8 @@ export default function SVGDownloadButton(props: {className: string, units: Unit
   };
 
   return (
-    <>
-    <div className="inline-block p-1.5">
-    <button
-      className="text-white block bg-pink-400 hover:bg-pink-500 focus:outline-none focus:ring-4 focus:ring-pink-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2"
-      onClick={handleDownload}>
+    <button className={buttonClasses} onClick={handleDownload}>
       Download SVG
     </button>
-    <a
-      className="block font-medium text-blue-600 dark:text-blue-500 hover:underline"
-      href="https://github.com/3ach/table/issues"
-    >
-      Report a bug or request a feature
-    </a>
-    </div>
-    </>
   );
 };

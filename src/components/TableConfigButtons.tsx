@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { Table, parseTableSnapshot } from "../models/Table";
 import { downloadBlob } from "../lib/download";
+import { smallButtonClasses } from "../lib/styles";
 
 type TableConfigButtonsProps = {
     table: Table,
@@ -45,14 +46,15 @@ export default function TableConfigButtons(props: TableConfigButtonsProps) {
     };
 
     return (
-        <div className="inline-block p-1.5">
+        <div className="mt-2 flex gap-2">
             <button
-                className="text-white block bg-pink-400 hover:bg-pink-500 focus:outline-none focus:ring-4 focus:ring-pink-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2"
+                className={`${smallButtonClasses} bg-slate-500 hover:bg-slate-600 focus:ring-slate-300`}
                 onClick={handleExport}>
                 Export JSON
             </button>
+            {/* Amber, not slate: importing replaces the table you have open. */}
             <button
-                className="text-white block bg-pink-400 hover:bg-pink-500 focus:outline-none focus:ring-4 focus:ring-pink-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2"
+                className={`${smallButtonClasses} bg-amber-500 hover:bg-amber-600 focus:ring-amber-300`}
                 onClick={() => fileInput.current?.click()}>
                 Import JSON
             </button>
