@@ -6,6 +6,8 @@ type TablePropEditorProps = {
     itemName: string,
     propName: keyof TableEditable,
     updateTable: (c: Table) => void,
+    // Optional note shown under the field, for behaviour the label cannot carry.
+    hint?: string,
 }
 
 export default function TablePropEditor(props: TablePropEditorProps) {
@@ -48,17 +50,18 @@ export default function TablePropEditor(props: TablePropEditorProps) {
     const currentValue = pending ? value : props.table[props.propName];
 
     return (
-        <>
-            <label className="block mb-2 text-sm font-medium text-gray-900">
+        <div className="mb-2">
+            <label className="block text-sm font-medium text-gray-900">
                 {props.itemName}: {'  '}
-                <input 
+                <input
                     key={props.propName}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5" 
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
                     onChange={(e) => {setPending(true); setValue(e.target.value)}}
-                    value={currentValue} 
-                    onBlur={(e) => update(e.target.value)} 
+                    value={currentValue}
+                    onBlur={(e) => update(e.target.value)}
                     onKeyDown={updateIfEnterPressed}/>
             </label>
-        </>
+            {props.hint && <p className="mt-1 text-xs text-gray-500">{props.hint}</p>}
+        </div>
     )
 }

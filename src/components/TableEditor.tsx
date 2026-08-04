@@ -34,6 +34,11 @@ type SettingsGroup = {
     lr4Only?: boolean,
 }
 
+// Notes shown under individual fields, for behaviour a label cannot carry.
+const fieldHints: Partial<Record<keyof TableEditable, string>> = {
+    bitDiameter: "Set to 0 to switch off automatic dog-bones and leave inside corners square.",
+};
+
 const settingsGroups: SettingsGroup[] = [
     {
         title: "Material",
@@ -143,6 +148,7 @@ export default function TableEditor(props: TableEditorProps) {
                             propName={field}
                             table={props.table}
                             updateTable={props.updateTable}
+                            hint={fieldHints[field]}
                         />
                     ))}
                 </section>
