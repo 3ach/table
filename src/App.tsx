@@ -35,7 +35,7 @@ function App() {
             first and measure it &mdash; it should come out at exactly{' '}
             {table.calibrationSquareSize} {table.units}.
           </p>
-          <SVGDownloadButton className="real-size-layout" units={table.units} />
+          <SVGDownloadButton className="real-size-layout" table={table} />
           <TableConfigButtons table={table} updateTable={setTable} />
         </div>
 

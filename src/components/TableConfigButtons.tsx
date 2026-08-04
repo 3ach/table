@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { Table, parseTableSnapshot } from "../models/Table";
 import { downloadBlob } from "../lib/download";
+import { exportFilename } from "../lib/filename";
 import { smallButtonClasses } from "../lib/styles";
 
 type TableConfigButtonsProps = {
@@ -16,7 +17,7 @@ export default function TableConfigButtons(props: TableConfigButtonsProps) {
 
     const handleExport = () => {
         const json = JSON.stringify(props.table.snapshot, null, 2);
-        downloadBlob(new Blob([json], { type: "application/json" }), "table.json");
+        downloadBlob(new Blob([json], { type: "application/json" }), exportFilename(props.table, "json"));
     };
 
     const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,8 +1,9 @@
-import { Units } from '../models/Table';
+import { Table } from '../models/Table';
 import { downloadBlob } from '../lib/download';
+import { exportFilename } from '../lib/filename';
 import { buttonClasses } from '../lib/styles';
 
-export default function SVGDownloadButton(props: {className: string, units: Units}) {
+export default function SVGDownloadButton(props: {className: string, table: Table}) {
   const handleDownload = () => {
     // Find the container holding the on-screen SVG.
     const container = document.getElementById(props.className);
@@ -27,15 +28,15 @@ export default function SVGDownloadButton(props: {className: string, units: Unit
     const viewBox = clone.getAttribute('viewBox');
     if (viewBox) {
       const [, , width, height] = viewBox.split(/\s+/).map(Number);
-      clone.setAttribute('width', `${width}${props.units}`);
-      clone.setAttribute('height', `${height}${props.units}`);
+      clone.setAttribute('width', `${width}${props.table.units}`);
+      clone.setAttribute('height', `${height}${props.table.units}`);
     }
     clone.removeAttribute('class');
 
     // Serialize the cleaned-up SVG.
     const svgContent = new XMLSerializer().serializeToString(clone);
 
-    downloadBlob(new Blob([svgContent], { type: 'image/svg+xml' }), 'layout.svg');
+    downloadBlob(new Blob([svgContent], { type: 'image/svg+xml' }), exportFilename(props.table, 'svg'));
   };
 
   return (
