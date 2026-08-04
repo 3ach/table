@@ -17,7 +17,8 @@ export default class TopRail extends SVGComponent<TopRailProps> {
         const holeSize = this.props.table.holeSize;
         const material = this.props.table.material;
         const xSparGap = this.props.table.xSparGap;
-        const buffer = length > maxLength ? material / 2 : 0;
+        // Gap between the two pieces a too-long rail is split into.
+        const buffer = length > maxLength ? this.props.table.effectivePartMargin : 0;
 
         let [yFrontSetback, yFrontFirstX, yFrontSecondX] = this.props.table.frontHoleCoordinates;
         let [yBackFirstSetback, yBackSecondSetback, yBackFirstX, yBackSecondX] = this.props.table.backHoleCoordinates;

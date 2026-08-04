@@ -23,6 +23,7 @@ function propertyNameToLabel(name: keyof TableEditable): string {
         case "railInsideBuffer": return "Tube rail inside buffer"
         case "railOutsideBuffer": return "Tube rail outside buffer"
         case "bitDiameter": return "CNC bit diameter"
+        case "partMargin": return "Margin between parts"
     }
 }
 
@@ -37,13 +38,14 @@ type SettingsGroup = {
 // Notes shown under individual fields, for behaviour a label cannot carry.
 const fieldHints: Partial<Record<keyof TableEditable, string>> = {
     bitDiameter: "Set to 0 to switch off automatic dog-bones and leave inside corners square.",
+    partMargin: "Set to 0 to use 4× the bit diameter, or 20mm when the bit diameter is also 0.",
 };
 
 const settingsGroups: SettingsGroup[] = [
     {
         title: "Material",
-        description: "The sheet you are cutting and the tool cutting it. Slots are cut as wide as the material, and the bit diameter sizes the dog-bone reliefs in the inside corners.",
-        fields: ["material", "bitDiameter"],
+        description: "The sheet you are cutting and the tool cutting it. Slots are cut as wide as the material, the bit diameter sizes the dog-bone reliefs in the inside corners, and the margin is the clear space left between parts on the sheet.",
+        fields: ["material", "bitDiameter", "partMargin"],
     },
     {
         title: "Table size",

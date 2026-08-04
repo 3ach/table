@@ -15,28 +15,13 @@ export default function TablePropEditor(props: TablePropEditorProps) {
     const [pending, setPending] = useState(false);
 
     const update = (valueStr: string) => {
-        const newTable = new Table(
-            props.table.xCut,
-            props.table.yCut,
-            props.table.xSparMinGap,
-            props.table.ySparMinGap,
-            props.table.clipMinGap,
-            props.table.thickness,
-            props.table.railMaterialThickness,
-            props.table.material,
-            props.table.overhang,
-            props.table.trackCutPoint,
-            props.table.flatOutsideBuffer,
-            props.table.flatInsideBuffer,
-            props.table.railOutsideBuffer,
-            props.table.railInsideBuffer,
-            props.table.bitDiameter,
-            props.table.units,
-            props.table.configuration,
-        );
-        const val = parseFloat(valueStr);
+        // By field name, not through the positional constructor, so a new
+        // dimension cannot be silently dropped here.
+        const newTable = Table.fromSnapshot({
+            ...props.table.snapshot,
+            [props.propName]: parseFloat(valueStr),
+        });
         setPending(false);
-        newTable[props.propName] = val;
         props.updateTable(newTable)
     }
 

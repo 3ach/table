@@ -16,7 +16,8 @@ export default function TableLayout(props: TableLayoutProps) {
     const strokeWidth = props.strokeWidth;
     const tableThickness = props.table.thickness;
     const materialThickness = props.table.material
-    const kerfWidth = materialThickness / 2;
+    // Clear space between neighbouring parts on the sheet.
+    const kerfWidth = props.table.effectivePartMargin;
     const yCut = props.table.yCut;
     const flatTrackWidth = props.table.flatTrackWidth;
     const railTrackWidth = props.table.railTrackWidth;

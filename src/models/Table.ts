@@ -17,6 +17,9 @@ export interface TableEditable {
     railOutsideBuffer: number;
     railInsideBuffer: number;
     bitDiameter: number;
+    // Space left between parts nested on the sheet. 0 means work it out from the
+    // bit diameter - see Table.effectivePartMargin.
+    partMargin: number;
 }
 
 // A Table serialized down to plain data: every editable dimension plus the
@@ -46,6 +49,7 @@ export const tableNumericFields: (keyof TableEditable)[] = [
     "railOutsideBuffer",
     "railInsideBuffer",
     "bitDiameter",
+    "partMargin",
 ];
 
 // The stock Lowrider 4 table, in inches.
@@ -66,13 +70,16 @@ export function defaultTable(): Table {
         0,
         0.25,
         0.125,
+        0,
         "in",
         "LR4",
     );
 }
 
 // Validates untrusted data (a parsed .json file, or whatever is in
-// localStorage) into a TableSnapshot, or returns null if it is not one.
+// localStorage) into a TableSnapshot, or returns null if it is not one. A field
+// that is simply absent takes its default, so a table saved or exported by an
+// older version still loads when a new dimension is added.
 export function parseTableSnapshot(raw: unknown): TableSnapshot | null {
     if (typeof raw !== "object" || raw === null) {
         return null;
@@ -93,11 +100,20 @@ export function parseTableSnapshot(raw: unknown): TableSnapshot | null {
         configuration: data.configuration,
     } as TableSnapshot;
 
+    const defaults = defaultTable();
+
     for (const field of tableNumericFields) {
         const value = data[field];
+
+        if (value === undefined) {
+            snapshot[field] = defaults[field];
+            continue;
+        }
+
         if (typeof value !== "number" || !Number.isFinite(value)) {
             return null;
         }
+
         snapshot[field] = value;
     }
 
@@ -120,6 +136,7 @@ export class Table implements TableEditable {
     railOutsideBuffer: number;
     railInsideBuffer: number;
     bitDiameter: number;
+    partMargin: number;
     units: Units;
     configuration: Configuration;
 
@@ -139,6 +156,7 @@ export class Table implements TableEditable {
         railOutsideBuffer: number,
         railInsideBuffer: number,
         bitDiameter: number,
+        partMargin: number,
         units: Units,
         configuration: Configuration
     ) {
@@ -157,6 +175,7 @@ export class Table implements TableEditable {
         this.railOutsideBuffer = railOutsideBuffer;
         this.railInsideBuffer = railInsideBuffer;
         this.bitDiameter = bitDiameter;
+        this.partMargin = partMargin;
         this.units = units;
         this.configuration = configuration;
     }
@@ -341,6 +360,27 @@ export class Table implements TableEditable {
         return this.bitDiameter / 2;
     }
 
+    // How much clear space to leave between parts nested on the sheet. The
+    // partMargin setting wins when it is set; 0 means work it out automatically,
+    // as four bit diameters - enough for the cutter to pass between two parts
+    // without touching either. With no bit diameter to go on (dog-bones off),
+    // fall back to a fixed 20mm.
+    get effectivePartMargin(): number {
+        if (this.partMargin > 0) {
+            return this.partMargin;
+        }
+
+        if (this.bitDiameter > 0) {
+            return 4 * this.bitDiameter;
+        }
+
+        return {
+            "mm": 20,
+            "cm": 2,
+            "in": 20 / 25.4,
+        }[this.units];
+    }
+
     get inMillimeters(): Table {
         const convert = {
             "mm": (x: number) => x,
@@ -364,6 +404,7 @@ export class Table implements TableEditable {
             convert(this.railOutsideBuffer),
             convert(this.railInsideBuffer),
             convert(this.bitDiameter),
+            convert(this.partMargin),
             "mm",
             this.configuration,
         )
@@ -392,6 +433,7 @@ export class Table implements TableEditable {
             convert(this.railOutsideBuffer),
             convert(this.railInsideBuffer),
             convert(this.bitDiameter),
+            convert(this.partMargin),
             "cm",
             this.configuration,
         )
@@ -420,6 +462,7 @@ export class Table implements TableEditable {
             convert(this.railOutsideBuffer),
             convert(this.railInsideBuffer),
             convert(this.bitDiameter),
+            convert(this.partMargin),
             "in",
             this.configuration,
         )
