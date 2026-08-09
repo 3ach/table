@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 import './App.css'
 
 import TableLayout from './components/TableLayout';
@@ -6,12 +6,19 @@ import TableEditor from './components/TableEditor';
 import { Table } from './models/Table';
 import SVGDownloadButton from './components/SVGDownloadButton';
 import TableConfigButtons from './components/TableConfigButtons';
+import ViewToggleButton from './components/ViewToggleButton';
 import { loadTable, saveTable } from './lib/storage';
+
+// three.js and its React bindings are several times the size of the rest of the
+// app, and most visits never leave the cut sheet. Load them the first time
+// someone asks for the 3D view instead of on every page load.
+const Table3DView = lazy(() => import('./components/Table3DView'));
 
 function App() {
   // Start from whatever was last used in this browser, falling back to the
   // stock table, and write every change back.
   const [table, setTable] = useState<Table>(loadTable);
+  const [view3D, setView3D] = useState(false);
 
   useEffect(() => saveTable(table), [table]);
 
@@ -37,6 +44,9 @@ function App() {
           </p>
           <SVGDownloadButton className="real-size-layout" table={table} />
           <TableConfigButtons table={table} updateTable={setTable} />
+          <div className="mt-2">
+            <ViewToggleButton view3D={view3D} onToggle={() => setView3D(!view3D)} />
+          </div>
         </div>
 
         <footer className="mt-auto pt-6 text-xs text-gray-500">
@@ -46,6 +56,13 @@ function App() {
             href="https://github.com/3ach/table"
           >
             Zach Zundel
+          </a>
+          . 3D view by{' '}
+          <a
+            className="font-medium text-gray-700 hover:underline"
+            href="https://github.com/jeyeager65"
+          >
+            jeyeager65
           </a>
           . This version by{' '}
           <a
@@ -58,8 +75,20 @@ function App() {
         </footer>
       </aside>
 
-      <main className="min-w-0 flex-1 overflow-hidden bg-gray-200 p-6" id="real-size-layout">
-        <TableLayout table={table} strokeWidth={strokeWidth} />
+      <main className="min-w-0 flex-1 overflow-hidden bg-gray-200 p-6">
+        {/* The cut sheet stays mounted behind the 3D view: Download SVG reads
+            the drawing straight out of the DOM, so hiding it beats unmounting
+            it. */}
+        <div id="real-size-layout" className={view3D ? 'hidden' : 'h-full'}>
+          <TableLayout table={table} strokeWidth={strokeWidth} />
+        </div>
+        {view3D && (
+          <div className="h-full">
+            <Suspense fallback={<p className="text-sm text-gray-500">Loading the 3D view&hellip;</p>}>
+              <Table3DView table={table} />
+            </Suspense>
+          </div>
+        )}
       </main>
     </div>
   )
