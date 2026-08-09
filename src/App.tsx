@@ -50,9 +50,9 @@ function App() {
           . This version by{' '}
           <a
             className="font-medium text-gray-700 hover:underline"
-            href="https://github.com/juliusvaart/table"
+            href="https://github.com/avec-sans/torsion-box-table"
           >
-            Julius van der Vaart
+            avec sans
           </a>
           .
         </footer>
