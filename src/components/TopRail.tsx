@@ -20,8 +20,17 @@ export default class TopRail extends SVGComponent<TopRailProps> {
         // Gap between the two pieces a too-long rail is split into.
         const buffer = length > maxLength ? this.props.table.effectivePartMargin : 0;
 
-        let [yFrontSetback, yFrontFirstX, yFrontSecondX] = this.props.table.frontHoleCoordinates;
-        let [yBackFirstSetback, yBackSecondSetback, yBackFirstX, yBackSecondX] = this.props.table.backHoleCoordinates;
+        const frontHoles = this.props.table.frontHoleCoordinates;
+        const backHoles = this.props.table.backHoleCoordinates;
+
+        // Setbacks run along the rail and are the same whichever side it is on.
+        const [yFrontSetback] = frontHoles;
+        const [yBackFirstSetback, yBackSecondSetback] = backHoles;
+
+        // The positions across the rail are padded on one side and mirrored on
+        // the other, below.
+        let [, yFrontFirstX, yFrontSecondX] = frontHoles;
+        let [, , yBackFirstX, yBackSecondX] = backHoles;
 
         let pathstr = `M 0 0`
 
