@@ -24,6 +24,7 @@ function propertyNameToLabel(name: keyof TableEditable): string {
         case "railOutsideBuffer": return "Tube rail outside buffer"
         case "bitDiameter": return "CNC bit diameter"
         case "partMargin": return "Margin between parts"
+        case "overcut": return "Spar slot overcut"
     }
 }
 
@@ -39,6 +40,7 @@ type SettingsGroup = {
 const fieldHints: Partial<Record<keyof TableEditable, string>> = {
     bitDiameter: "Set to 0 to switch off automatic dog-bones and leave inside corners square.",
     partMargin: "Set to 0 to use 4× the bit diameter, or 20mm when the bit diameter is also 0.",
+    overcut: "Extra depth cut into both halves of every slot, so the spars pull together face to face instead of bottoming out. 0 makes the two slots meet exactly. Cut the test parts to find the value your material needs.",
 };
 
 const settingsGroups: SettingsGroup[] = [
@@ -54,8 +56,8 @@ const settingsGroups: SettingsGroup[] = [
     },
     {
         title: "Spars",
-        description: "The egg-crate frame. Spars are never spaced further apart than these gaps; the spacing that comes out is divided evenly across the table, so it is usually tighter.",
-        fields: ["xSparMinGap", "ySparMinGap"],
+        description: "The egg-crate frame. Spars are never spaced further apart than these gaps; the spacing that comes out is divided evenly across the table, so it is usually tighter. The overcut sets how much clearance is left at the bottom of the slots where the spars cross.",
+        fields: ["xSparMinGap", "ySparMinGap", "overcut"],
     },
     {
         title: "Rails",

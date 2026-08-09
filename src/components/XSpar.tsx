@@ -21,7 +21,8 @@ export default class XSpar extends SVGComponent<XSparProps> {
         const overhang = this.props.table.overhang;
         const yGap = this.props.table.ySparGap;
         const r = this.props.table.dogBoneRadius;
-        const depth = thickness / 2;
+        // Slotted down from the top edge.
+        const depth = this.props.table.slotDepth;
 
         let pathstr = '';
         const start = flatBuffer + flatOutsideBuffer + overhang - (xShrink / 2);

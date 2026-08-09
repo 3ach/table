@@ -20,6 +20,8 @@ export interface TableEditable {
     // Space left between parts nested on the sheet. 0 means work it out from the
     // bit diameter - see Table.effectivePartMargin.
     partMargin: number;
+    // Extra depth cut into both halves of every spar slot - see Table.slotDepth.
+    overcut: number;
 }
 
 // A Table serialized down to plain data: every editable dimension plus the
@@ -50,7 +52,23 @@ export const tableNumericFields: (keyof TableEditable)[] = [
     "railInsideBuffer",
     "bitDiameter",
     "partMargin",
+    "overcut",
 ];
+
+// Fields that describe a fit rather than a cut dimension. A cut dimension wants
+// rounding up to something you can actually cut - a whole millimetre, or a
+// sixteenth of an inch - but these are small enough that the same rounding would
+// swamp them: a 0.015in overcut would land on 1mm. They convert exactly instead,
+// rounded only enough to keep float noise out of the input boxes.
+const fitFields: Set<keyof TableEditable> = new Set([
+    "overcut",
+    "bitDiameter",
+    "partMargin",
+    "flatInsideBuffer",
+    "flatOutsideBuffer",
+    "railInsideBuffer",
+    "railOutsideBuffer",
+]);
 
 // The stock Lowrider 4 table, in inches.
 export function defaultTable(): Table {
@@ -70,6 +88,7 @@ export function defaultTable(): Table {
         0,
         0.25,
         0.125,
+        0,
         0,
         "in",
         "LR4",
@@ -137,6 +156,7 @@ export class Table implements TableEditable {
     railInsideBuffer: number;
     bitDiameter: number;
     partMargin: number;
+    overcut: number;
     units: Units;
     configuration: Configuration;
 
@@ -157,6 +177,7 @@ export class Table implements TableEditable {
         railInsideBuffer: number,
         bitDiameter: number,
         partMargin: number,
+        overcut: number,
         units: Units,
         configuration: Configuration
     ) {
@@ -176,6 +197,7 @@ export class Table implements TableEditable {
         this.railInsideBuffer = railInsideBuffer;
         this.bitDiameter = bitDiameter;
         this.partMargin = partMargin;
+        this.overcut = overcut;
         this.units = units;
         this.configuration = configuration;
     }
@@ -360,6 +382,17 @@ export class Table implements TableEditable {
         return this.bitDiameter / 2;
     }
 
+    // How deep each half of a spar joint is slotted. Half the thickness each and
+    // the two slots meet exactly, so the parts bottom out in the slot and any
+    // dust or glue in there holds the frame apart. The overcut setting deepens
+    // both halves by the same amount, leaving 2x overcut of clearance at the
+    // bottom of the joint so the parts seat on their shoulders instead. Clamped
+    // to half the thickness - beyond that the slot cuts clean through the part.
+    get slotDepth(): number {
+        const overcut = Math.min(Math.max(this.overcut, 0), this.thickness / 2);
+        return (this.thickness / 2) + overcut;
+    }
+
     // How much clear space to leave between parts nested on the sheet. The
     // partMargin setting wins when it is set; 0 means work it out automatically,
     // as four bit diameters - enough for the cutter to pass between two parts
@@ -381,90 +414,48 @@ export class Table implements TableEditable {
         }[this.units];
     }
 
-    get inMillimeters(): Table {
-        const convert = {
-            "mm": (x: number) => x,
-            "cm": (x: number) => x * 10,
-            "in": (x: number) => Math.ceil(25.4 * x),
-        }[this.units];
+    // Re-expresses every dimension in another unit, by field name so a new
+    // dimension cannot be silently dropped. Cut dimensions round up to something
+    // you can cut - a whole millimetre, or a sixteenth of an inch - while the
+    // fit fields convert exactly; see fitFields for why.
+    private in(units: Units): Table {
+        if (units == this.units) {
+            return Table.fromSnapshot(this.snapshot);
+        }
 
-        return new Table(
-            convert(this.xCut),
-            convert(this.yCut),
-            convert(this.xSparMinGap),
-            convert(this.ySparMinGap),
-            convert(this.clipMinGap),
-            convert(this.thickness),
-            convert(this.railMaterialThickness),
-            convert(this.material),
-            convert(this.overhang),
-            convert(this.trackCutPoint),
-            convert(this.flatOutsideBuffer),
-            convert(this.flatInsideBuffer),
-            convert(this.railOutsideBuffer),
-            convert(this.railInsideBuffer),
-            convert(this.bitDiameter),
-            convert(this.partMargin),
-            "mm",
-            this.configuration,
-        )
+        const millimeters = { "mm": 1, "cm": 10, "in": 25.4 }[this.units];
+        const perMillimeter = { "mm": 1, "cm": 0.1, "in": 1 / 25.4 }[units];
+        const exact = (x: number) => x * millimeters * perMillimeter;
+
+        // Cuttable steps per unit: a whole millimetre in mm and cm, a sixteenth
+        // in inches. Counted as whole steps and divided down, so the result is
+        // a clean 124.5 rather than 124.50000000000001.
+        const steps = { "mm": 1, "cm": 10, "in": 16 }[units];
+        const cut = (x: number) => Math.ceil(exact(x) * steps) / steps;
+
+        // Enough decimals that a value survives a round trip through another
+        // unit, few enough that the input box stays readable.
+        const places = { "mm": 1000, "cm": 10000, "in": 100000 }[units];
+        const fit = (x: number) => Math.round(exact(x) * places) / places;
+
+        const snapshot = { ...this.snapshot, units };
+
+        for (const field of tableNumericFields) {
+            snapshot[field] = fitFields.has(field) ? fit(this[field]) : cut(this[field]);
+        }
+
+        return Table.fromSnapshot(snapshot);
+    }
+
+    get inMillimeters(): Table {
+        return this.in("mm");
     }
 
     get inCentimeters(): Table {
-        const convert = {
-            "mm": (x: number) => x / 10,
-            "cm": (x: number) => x,
-            "in": (x: number) => Math.ceil(25.4 * x) / 10,
-        }[this.units];
-
-        return new Table(
-            convert(this.xCut),
-            convert(this.yCut),
-            convert(this.xSparMinGap),
-            convert(this.ySparMinGap),
-            convert(this.clipMinGap),
-            convert(this.thickness),
-            convert(this.railMaterialThickness),
-            convert(this.material),
-            convert(this.overhang),
-            convert(this.trackCutPoint),
-            convert(this.flatOutsideBuffer),
-            convert(this.flatInsideBuffer),
-            convert(this.railOutsideBuffer),
-            convert(this.railInsideBuffer),
-            convert(this.bitDiameter),
-            convert(this.partMargin),
-            "cm",
-            this.configuration,
-        )
+        return this.in("cm");
     }
 
     get inInches(): Table {
-        const convert = {
-            "mm": (x: number) => Math.ceil((x * 16) / 25.4) / 16,
-            "cm": (x: number) => Math.ceil((x * 16) / 2.54) / 16,
-            "in": (x: number) => x,
-        }[this.units];
-
-        return new Table(
-            convert(this.xCut),
-            convert(this.yCut),
-            convert(this.xSparMinGap),
-            convert(this.ySparMinGap),
-            convert(this.clipMinGap),
-            convert(this.thickness),
-            convert(this.railMaterialThickness),
-            convert(this.material),
-            convert(this.overhang),
-            convert(this.trackCutPoint),
-            convert(this.flatOutsideBuffer),
-            convert(this.flatInsideBuffer),
-            convert(this.railOutsideBuffer),
-            convert(this.railInsideBuffer),
-            convert(this.bitDiameter),
-            convert(this.partMargin),
-            "in",
-            this.configuration,
-        )
+        return this.in("in");
     }
 }
