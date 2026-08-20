@@ -31,6 +31,17 @@ hand:
 - **Nesting** lays every part out on one sheet with a clear margin between them,
   wide enough for the cutter to pass without touching either part.
 
+## The 3D view
+
+"Show 3D view" swaps the cut sheet for the assembled table — spars slotted
+together, rails and spoilboard in place — built from the same numbers as the
+drawing, so it is a check on the parameters rather than a separate model. Drag
+to orbit, right-drag to pan, shift + right-drag to spin it about the vertical
+axis, scroll to zoom. Individual parts can be hidden to see inside the frame.
+
+It is a preview only; the SVG is still what you cut. three.js is a large
+download, so it is only fetched the first time you open the view.
+
 ## Cutting one
 
 1. Set your units and configuration, then work down the settings in the sidebar.
@@ -88,6 +99,10 @@ Pushing to `main` builds and deploys to GitHub Pages via
   `SideRail`, `TestParts`, `CalibrationSquare`), each emitting an SVG path from
   a `Table`. `TableLayout` nests them on the sheet; `TableEditor` is the
   sidebar.
+- `src/components/Table3DView.tsx` — the 3D view, react-three-fiber over
+  three.js. It builds its own meshes from the same `Table` getters rather than
+  sharing geometry with the SVG components, so a change to how a part is cut has
+  to be made in both places. `App.tsx` lazy-loads it.
 - `src/lib/dogbone.ts` — the corner relief, shared by every part.
 - `src/lib/storage.ts`, `src/lib/filename.ts` — browser persistence and export
   naming.
@@ -99,5 +114,7 @@ up on their own, and a config saved before it existed still loads.
 
 ## Credits
 
-Originally made by [Zach Zundel](https://github.com/3ach/table). This version by
+Originally made by [Zach Zundel](https://github.com/3ach/table). The 3D view is
+the work of [jeyeager65](https://github.com/jeyeager65), ported from
+[their fork](https://github.com/jeyeager65/table). This version by
 [avec sans](https://github.com/avec-sans/torsion-box-table).
