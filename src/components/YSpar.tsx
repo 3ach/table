@@ -1,6 +1,7 @@
 import { SVG } from '@svgdotjs/svg.js';
 import { SVGComponent, SVGProps } from './SVGComponent';
 import { Table } from '../models/Table';
+import { dogBoneCorner } from '../lib/dogbone';
 
 interface YSparProps extends SVGProps {
     table: Table,
@@ -14,17 +15,23 @@ export default class YSpar extends SVGComponent<YSparProps> {
         const material = this.props.table.material;
         const xMortises = this.props.table.xSparCount - 1;
         const xGap = this.props.table.xSparGap;
+        const r = this.props.table.dogBoneRadius;
+        // Slotted up from the bottom edge, so this is where the slot floor sits
+        // measured from the top.
+        const depth = thickness - this.props.table.slotDepth;
 
         let pathstr = `M 0 0`
-        pathstr += `L 0 ${(thickness / 2) - (thickness / 50)}`; 
+        pathstr += `L 0 ${depth}`;
         for (let mortise = 0; mortise < xMortises; mortise++) {
             const x = (mortise * xGap);
-            pathstr += `L ${x + material} ${(thickness / 2) - (thickness / 50)}`; 
-            pathstr += `L ${x + material} ${thickness}`; 
-            pathstr += `L ${x + xGap} ${thickness}`; 
-            pathstr += `L ${x + xGap} ${(thickness / 2) - (thickness / 50)}`; 
+            // floor -> right corner -> down the wall
+            pathstr += dogBoneCorner(x + material, depth, 1, 0, 0, 1, r);
+            pathstr += `L ${x + material} ${thickness}`;
+            pathstr += `L ${x + xGap} ${thickness}`;
+            // up the wall -> left corner -> floor
+            pathstr += dogBoneCorner(x + xGap, depth, 0, -1, 1, 0, r);
         }
-        pathstr += `L ${yCut} ${(thickness / 2) - (thickness / 50)}`
+        pathstr += `L ${yCut} ${depth}`
         pathstr += `L ${yCut} 0`
         pathstr += 'z'
 
